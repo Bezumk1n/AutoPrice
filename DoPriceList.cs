@@ -1,0 +1,252 @@
+﻿using System;
+using System.Linq;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.IO.Compression;
+using OfficeOpenXml;
+using OfficeOpenXml.Style;
+
+namespace AutoPrice
+{
+    public class DoPriceList
+    {
+        string destinationPath;
+        public DoPriceList(string pricelistPath, string exceptionPath, string destinationPath, bool? fullPrice)
+        {
+            this.destinationPath        = destinationPath;
+            string[] fileText           = WorkWithFile.OpenFile(pricelistPath);
+            string[] exceptions         = WorkWithFile.OpenExceptions(exceptionPath);
+            List <PriceModel> priceList = new List<PriceModel>();
+            CultureInfo culture         = CultureInfo.CreateSpecificCulture("en-US");
+
+            string[,] price;
+
+            // Проверяем, был ли выбран файл, если нет то прерываем программу
+            if (fileText == null)
+            {
+                return;
+            }
+            //==================================================================================================
+
+            // Нужно подсчитать количество знаков табуляции. Так мы поймем сколько будет столбцов у будущего массива "price"
+            int rows    = fileText.GetUpperBound(0);
+            int columns = 0;
+            string str  = fileText[0];
+            string tab  = "\t";
+            int index   = 0; ;
+
+            while ((index = str.IndexOf(tab, index)) != -1)
+            {
+                columns++;
+                index = index + tab.Length;
+            }
+            price = new string[rows, columns];
+            //==================================================================================================
+
+            // Заполняем массив данными
+            for (int i = 0; i < rows; i++)
+            {
+                string[] temp = fileText[i].Split('\t');
+                for (int j = 0; j < columns; j++)
+                {
+                    price[i, j] = temp[j];
+                }
+            }
+            //==================================================================================================
+
+            // Проверяем на нулевые цены ("0.00") и исключаем их, если таковые находятся
+            for (int i = 0; i < rows; i++)
+            {
+                if (price[i, 5] == "0.00")
+                {
+                    price[i, 0] = "0";
+                }
+            }
+            //==================================================================================================
+
+            // Блок проверки наименований на наличие. 
+            // Наименования с нулевым количеством на складах (учитываются склад Северянин, Пушкарев и магазин) не будут попадать в прайс-лист
+            string zero = "0.00";
+            price[0, 0] = "0";
+
+            if (fullPrice == false)
+            {
+                for (int i = 0; i < rows; i++)
+                {
+                    if (price[i, 7] == zero && price[i, 9] == zero && price[i, 11] == zero)
+                    {
+                        price[i, 0] = "0";
+                    }
+                }
+            }
+            // Это условие срабатывает если пользователь поставил галку в чек боксе "Полный прайс"
+            else
+            {
+                string op = "OP!";
+                string na = "NA!";
+                for (int i = 0; i < rows; i++)
+                {
+                    if (price[i, 2].EndsWith(op) || price[i, 2].EndsWith(na) && price[i, 7] == zero && price[i, 9] == zero && price[i, 11] == zero)
+                    {
+                        price[i, 0] = "0";
+                    }
+                }
+            }
+            //==================================================================================================
+
+            // Блок проверки наименований на "агентское вознаграждение". 
+            // Агентское соглашение не будет попадать в прайс-лист
+            string agent = "агентское вознаграждение";
+
+            for (int i = 0; i < rows; i++)
+            {
+                if (price[i, 14] != null && price[i, 14].ToLower().StartsWith(agent))
+                {
+                    price[i, 0] = "0";
+                }
+            }
+            //==================================================================================================
+
+            // Блок проверки групп товаров. 
+            // Если группа товаров равна группе из списка исключений, то такое наименование не будет попадать в прайс
+            if (fullPrice == false)
+            {
+                for (int i = 0; i < rows; i++)
+                {
+                    for (int j = 0; j < exceptions.Length; j++)
+                    {
+                        if (price[i, 3] == exceptions[j])
+                        {
+                            price[i, 0] = "0";
+                        }
+                    }
+                }
+            }
+            else
+            {
+                for (int i = 0; i < rows; i++)
+                {
+                    for (int j = 0; j < exceptions.Length; j++)
+                    {
+                        if (price[i, 3] == exceptions[j])
+                        {
+                            price[i, 0] = "0";
+                        }
+                    }
+                    if (price[i, 3] == "RELOD Ltd. (RUR)" || price[i, 3] == "RELOD LTD." && price[i, 7] == "0.00" && price[i, 9] == "0.00" && price[i, 11] == "0.00")
+                    {
+                        price[i, 0] = "0";
+                    }
+                }
+            }
+            //==================================================================================================
+
+            // Блок переноса данных из массива price в итоговый priceList
+
+            for (int i = 0; i < rows; i++)
+            {
+                if (price[i, 0] != "0")
+                {
+                    string warehouse;
+                    string store;
+                    double warehouseQTY = double.Parse(price[i, 7], culture) + double.Parse(price[i, 11], culture);
+                    double storeQTY = double.Parse(price[i, 9], culture);
+
+                    if (warehouseQTY > 10)
+                    {
+                        warehouse = "Более 10 шт";
+                    }
+                    else
+                    {
+                        warehouse = warehouseQTY.ToString();
+                    }
+
+                    if (storeQTY > 10)
+                    {
+                        store = "Более 10 шт";
+                    }
+                    else
+                    {
+                        store = storeQTY.ToString();
+                    }
+
+                    priceList.Add(new PriceModel
+                    {
+                        ISBN            = price[i, 1],                                  // присваиваем ISBN
+                        Title           = price[i, 14],                                 // присваиваем Наименование
+                        Price           = double.Parse(price[i, 6], culture),           // присваиваем Цену
+                        VAT             = double.Parse(price[i, 4], culture),           // присваиваем НДС
+                        Group           = price[i, 3],                                  // присваиваем Группу
+                        QTYwarehouse    = warehouse,                                    // присваиваем Количество на складах (Северянин + Пушкарев)
+                        QTYstore        = store,                                        // присваиваем Количество в магазине
+                        ShortTitle      = price[i, 2]                                   // присваиваем Краткое наименование
+                    });
+                }
+            }
+
+            // Сортируем наш прайс по полю ShortTitle
+            priceList = priceList.OrderBy(item => item.ShortTitle).ToList();
+
+            // Добавляем нумерацию
+            int count = 1;
+            foreach (PriceModel item in priceList)
+            {
+                item.Number = count;
+                count++;
+            }
+
+            SaveAsExcel(priceList);
+        }
+        private void SaveAsExcel(List<PriceModel> priceList)
+        {
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+            ExcelPackage excelPackage = new ExcelPackage();
+            ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets.Add(DateTime.Now.ToString("dd.MM.yyyy"));
+
+            // Добавляем шапку в первую строку
+            worksheet.Cells["A1"].Value = "#";
+            worksheet.Cells["B1"].Value = "ISBN";
+            worksheet.Cells["C1"].Value = "Наименование товара";
+            worksheet.Cells["D1"].Value = "Цена с НДС";
+            worksheet.Cells["E1"].Value = "НДС";
+            worksheet.Cells["F1"].Value = "Группа товара";
+            worksheet.Cells["G1"].Value = "Кол-во на складе";
+            worksheet.Cells["H1"].Value = "Кол-во в магазине";
+            worksheet.Cells["I1"].Value = "Краткое наименование";
+
+            // Добавляем данные из priceList начиная со второй строки
+            worksheet.Cells["A2"].LoadFromCollection(priceList);
+
+            // Устанавливаем ширину столбцов, кроме последнего ("Краткое наименование")
+            worksheet.Column(1).AutoFit();      // #
+            worksheet.Column(2).Width = 16;     // ISBN
+            worksheet.Column(3).Width = 110;    // Наименование товара
+            worksheet.Column(4).Width = 15;     // Цена с НДС
+            worksheet.Column(5).Width = 7;      // НДС
+            worksheet.Column(6).Width = 22;     // Группа товара
+            worksheet.Column(7).Width = 20;     // Кол-во на складе
+            worksheet.Column(8).Width = 20;     // Кол-во в магазине
+            worksheet.Column(9).Width = 25;     // Краткое наименование
+
+            // Устанавливаем границы, автофильтр, жирный шрифт для шапки, закрепляем первую строку, 
+            // а также меняем цифровой формат для столбца с ценами
+            worksheet.Column(4).Style.Numberformat.Format = "0.00";
+            worksheet.View.FreezePanes(2, 1);
+            worksheet.Cells["A1:I1"].Style.Font.Bold    = true;
+            worksheet.Cells["A1:I1"].AutoFilter         = true;
+            worksheet.Cells["A1:I" + (priceList.Count + 1)].Style.Border.Top.Style      = ExcelBorderStyle.Thin;
+            worksheet.Cells["A1:I" + (priceList.Count + 1)].Style.Border.Right.Style    = ExcelBorderStyle.Thin;
+            worksheet.Cells["A1:I" + (priceList.Count + 1)].Style.Border.Bottom.Style   = ExcelBorderStyle.Thin;
+            worksheet.Cells["A1:I" + (priceList.Count + 1)].Style.Border.Left.Style     = ExcelBorderStyle.Thin;
+
+            // Сохраняем файл в Excel
+            FileInfo fi = new FileInfo(destinationPath);
+            excelPackage.SaveAs(fi);
+
+            // Добавляем в архив
+            WorkWithFile.AddPriceToZIP(destinationPath);
+        }  
+    }
+}
