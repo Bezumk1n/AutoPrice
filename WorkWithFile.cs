@@ -48,19 +48,19 @@ namespace AutoPrice
         public static void UploadToFTP(string zipPath, string directory)
         {
             string[] login_pass = File.ReadAllLines(directory + @"\dailyUpload\log.txt", Encoding.UTF8);
+
             // Создаем объект FtpWebRequest - он указывает на файл, который будет создан
-            FtpWebRequest request = (FtpWebRequest)WebRequest.Create("ftp://ftp.relod.nichost.ru/files/relod_price.zip");
-            request.Credentials = new NetworkCredential(login_pass[0], login_pass[1]);
+            FtpWebRequest request   = (FtpWebRequest)WebRequest.Create("ftp://ftp.relod.nichost.ru/files/relod_price.zip");
+            request.Credentials     = new NetworkCredential(login_pass[0], login_pass[1]);
 
             // Устанавливаем метод на загрузку файлов
             request.Method = WebRequestMethods.Ftp.UploadFile;
 
             // Создаем поток для загрузки файла
-            FileStream fs = new FileStream(zipPath, FileMode.Open);
-            byte[] fileContents = new byte[fs.Length];
+            FileStream fs           = new FileStream(zipPath, FileMode.Open);
+            byte[] fileContents     = new byte[fs.Length];
             fs.Read(fileContents, 0, fileContents.Length);
             fs.Close();
-            request.ContentLength = fileContents.Length;
 
             // Пишем считанный в массив байтов файл в выходной поток
             Stream requestStream = request.GetRequestStream();
