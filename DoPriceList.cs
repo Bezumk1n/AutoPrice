@@ -10,7 +10,7 @@ namespace AutoPrice
 {
     public class DoPriceList
     {
-        string destinationPath;
+        private string destinationPath;
         public DoPriceList(string pricelistPath, string exceptionPath, string destinationPath, bool? fullPrice)
         {
             this.destinationPath        = destinationPath;
@@ -196,6 +196,9 @@ namespace AutoPrice
             }
 
             SaveAsExcel(priceList);
+
+            // Добавляем в архив
+            WorkWithFile.AddPriceToZIP(destinationPath);
         }
         private void SaveAsExcel(List<PriceModel> priceList)
         {
@@ -243,9 +246,6 @@ namespace AutoPrice
             // Сохраняем файл в Excel
             FileInfo fi = new FileInfo(destinationPath);
             excelPackage.SaveAs(fi);
-
-            // Добавляем в архив
-            WorkWithFile.AddPriceToZIP(destinationPath);
         }  
     }
 }
