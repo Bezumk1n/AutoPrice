@@ -18,18 +18,6 @@ namespace AutoPrice
 
             return fileText;
         }
-        public static string[] OpenExceptions(string exceptionPath)
-        {
-            string[] fileText = null;
-
-            if (File.Exists(exceptionPath))
-            {
-                fileText = File.ReadAllLines(exceptionPath, Encoding.UTF8);
-                return fileText;
-            }
-
-            return fileText;
-        }
         public static void AddPriceToZIP(string destinationPath)
         {
             string temp             = @"\_temp\";                                                         // Имя временной папки, по завершении работы она будет удалена

@@ -15,7 +15,7 @@ namespace AutoPrice
         {
             this.destinationPath        = destinationPath;
             string[] fileText           = WorkWithFile.OpenFile(pricelistPath);
-            string[] exceptions         = WorkWithFile.OpenExceptions(exceptionPath);
+            string[] exceptions         = WorkWithFile.OpenFile(exceptionPath);
             List <PriceModel> priceList = new List<PriceModel>();
             CultureInfo culture         = CultureInfo.CreateSpecificCulture("en-US");
 
