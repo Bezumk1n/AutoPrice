@@ -133,7 +133,7 @@ namespace AutoPrice
                             price[i, 0] = "0";
                         }
                     }
-                    if (price[i, 3] == "RELOD Ltd. (RUR)" || price[i, 3] == "RELOD LTD." && price[i, 7] == "0.00" && price[i, 9] == "0.00" && price[i, 11] == "0.00")
+                    if (price[i, 3] == "RELOD Ltd. (RUR)" || price[i, 3] == "RELOD LTD." || price[i, 3] == "SELT" && price[i, 7] == "0.00" && price[i, 9] == "0.00" && price[i, 11] == "0.00")
                     {
                         price[i, 0] = "0";
                     }
@@ -150,7 +150,7 @@ namespace AutoPrice
                     string warehouse;
                     string store;
                     double warehouseQTY = double.Parse(price[i, 7], culture) + double.Parse(price[i, 11], culture);
-                    double storeQTY = double.Parse(price[i, 9], culture);
+                    double storeQTY     = double.Parse(price[i, 9], culture);
 
                     if (warehouseQTY > 10)
                     {
