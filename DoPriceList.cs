@@ -73,7 +73,7 @@ namespace AutoPrice
             {
                 for (int i = 0; i < rows; i++)
                 {
-                    if (price[i, 7] == zero && price[i, 9] == zero && price[i, 11] == zero)
+                    if (price[i, 7] == zero && price[i, 9] == zero && price[i, 11] == zero && price[i, 3] != "OUP ELT OL")
                     {
                         price[i, 0] = "0";
                     }
@@ -156,6 +156,10 @@ namespace AutoPrice
                     {
                         warehouse = "Более 10 шт";
                     }
+                    else if (warehouseQTY == 1)
+                    {
+                        warehouse = "Мало";
+                    }
                     else
                     {
                         warehouse = warehouseQTY.ToString();
@@ -164,6 +168,10 @@ namespace AutoPrice
                     if (storeQTY > 10)
                     {
                         store = "Более 10 шт";
+                    }
+                    else if (storeQTY == 1)
+                    {
+                        store = "Мало";
                     }
                     else
                     {
