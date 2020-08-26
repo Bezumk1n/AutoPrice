@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.IO.Compression;
 using System.Net;
 using System.Text;
@@ -43,6 +44,10 @@ namespace AutoPrice
             // Удаляем временную папку
             Directory.Delete(startPath, true);
 
+            // Удаляем старый прайс-лист
+            RemoveOldPrice(directory);
+
+            // Загружаем архив на FTP
             UploadToFTP(zipPath, directory);
         }
         public static void UploadToFTP(string zipPath, string directory)
@@ -66,6 +71,14 @@ namespace AutoPrice
             Stream requestStream = request.GetRequestStream();
             requestStream.Write(fileContents, 0, fileContents.Length);
             requestStream.Close();
+        }
+        public static void RemoveOldPrice(string path)
+        {
+            string oldPrice = @"\Price roznitca " + DateTime.Now.AddDays(-1).ToString("dd.MM.yyyy") + ".xlsx";
+            if (File.Exists(path + oldPrice))
+            {
+                File.Delete(path + oldPrice);
+            }
         }
     }
 }
