@@ -9,13 +9,13 @@ namespace AutoPrice
     public static class EmailReport
     {
         static private string[] login_pass = File.ReadAllLines(@"\\Srv2008\relodobmen\Прайс-листы\dailyUpload\log.txt", Encoding.UTF8);
-        static private string files = "<p>Список файлов в директории для контроля:<br>";
         static DirectoryInfo dirInfo = new DirectoryInfo(@"\\Srv2008\relodobmen\Прайс-листы\");
 
+        static MailAddress from;
         static MailAddress to;
         static MailMessage mail;
+        
         static SmtpClient smtp;
-        static MailAddress from;
 
         static string subject = "Price Report";
         static string message =
@@ -23,6 +23,7 @@ namespace AutoPrice
                 "Прямая ссылка для скачивания прайса: <a href =\"http://www.relod.ru/files/relod_price.zip\">www.relod.ru/files/relod_price.zip</a><br>" +
                 "<p>ЗАО РЕЛОД<br>" +
                 DateTime.Now.ToString();
+        static private string files = "<p>Список файлов в директории для контроля:<br>";
         public static void SendReport()
         {
             foreach (var item in dirInfo.GetFiles())
