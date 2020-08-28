@@ -203,6 +203,7 @@ namespace AutoPrice
                 count++;
             }
 
+            // Сохранияем как в Excel файл
             SaveAsExcel(priceList);
 
             // Добавляем в архив

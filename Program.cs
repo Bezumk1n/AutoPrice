@@ -10,7 +10,17 @@ namespace AutoPrice
             string exceptionPath    = @"\\Srv2008\relodobmen\Прайс-листы\dailyUpload\Exceptions.txt";
             string destinationPath  = @"\\Srv2008\relodobmen\Прайс-листы\" + "Price roznitca " + DateTime.Now.ToString("dd.MM.yyyy") + ".xlsx";
             bool fullPrice          = false;
-            new DoPriceList(pricelistPath, exceptionPath, destinationPath, fullPrice);
+
+            try
+            {
+                new DoPriceList(pricelistPath, exceptionPath, destinationPath, fullPrice);
+                EmailReport.SendReport();
+            }
+            catch 
+            {
+                string message = "При попытке сгенерировать прайс-лист произошла ошибка.";
+                EmailReport.SendReport(message);
+            }
         }
     }
 }

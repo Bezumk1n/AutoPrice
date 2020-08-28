@@ -72,7 +72,7 @@ namespace AutoPrice
             requestStream.Write(fileContents, 0, fileContents.Length);
             requestStream.Close();
         }
-        public static void RemoveOldPrice(string path)
+        private static void RemoveOldPrice(string path)
         {
             string oldPrice = @"\Price roznitca " + DateTime.Now.AddDays(-1).ToString("dd.MM.yyyy") + ".xlsx";
             if (File.Exists(path + oldPrice))
