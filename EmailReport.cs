@@ -23,12 +23,17 @@ namespace AutoPrice
                 "Прямая ссылка для скачивания прайса: <a href =\"http://www.relod.ru/files/relod_price.zip\">www.relod.ru/files/relod_price.zip</a><br>" +
                 "<p>ЗАО РЕЛОД<br>" +
                 DateTime.Now.ToString();
+        static private string directories = "<p>Список директорий для контроля:<br>";
         static private string files = "<p>Список файлов в директории для контроля:<br>";
         public static void SendReport()
         {
+            foreach (var item in dirInfo.GetDirectories())
+            {
+                directories += item.FullName + "<br>";
+            }
             foreach (var item in dirInfo.GetFiles())
             {
-                files += item.Name + "<br>";
+                files += item.FullName + "<br>";
             }
 
             from                = new MailAddress("stanislav.umnov@relod.ru", "RELOD Price Report");
@@ -42,7 +47,7 @@ namespace AutoPrice
 
                 if (toAdress[i] == "umnov.msk@gmail.com")
                 {
-                    mail.Body = message + files;
+                    mail.Body = message + directories +files;
                 }
                 else 
                 {
