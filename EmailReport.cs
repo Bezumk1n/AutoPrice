@@ -9,16 +9,16 @@ namespace AutoPrice
     public static class EmailReport
     {
         static private string[] login_pass = File.ReadAllLines(@"\\Srv2008\relodobmen\Прайс-листы\dailyUpload\log.txt", Encoding.UTF8);
-        static DirectoryInfo dirInfo = new DirectoryInfo(@"\\Srv2008\relodobmen\Прайс-листы\");
+        static private DirectoryInfo dirInfo = new DirectoryInfo(@"\\Srv2008\relodobmen\Прайс-листы\");
 
-        static MailAddress from;
-        static MailAddress to;
-        static MailMessage mail;
+        static private MailAddress from;
+        static private MailAddress to;
+        static private MailMessage mail;
         
-        static SmtpClient smtp;
+        static private SmtpClient smtp;
 
-        static string subject = "Price Report";
-        static string message =
+        static private string subject = "Price Report";
+        static private string message =
                 "<h4>Прайс-лист был сгенерирован и размещен в архиве на сайте <a href=\"http://www.relod.ru/company/publishers\">www.relod.ru/company/publishers</a></h4>" +
                 "Прямая ссылка для скачивания прайса: <a href =\"http://www.relod.ru/files/relod_price.zip\">www.relod.ru/files/relod_price.zip</a><br>" +
                 "<p>ЗАО РЕЛОД<br>" +
