@@ -32,9 +32,10 @@ namespace AutoPrice
             {
                 directories += item.FullName + "<br>";
             }
+
             foreach (var item in dirInfo.GetFiles())
             {
-                files += item.FullName + "<br>";
+                files += item.Name + "<br>";
             }
 
             from                = new MailAddress("stanislav.umnov@relod.ru", "RELOD Price Report");
@@ -64,6 +65,11 @@ namespace AutoPrice
         }
         public static void SendReport(string message)
         {
+            foreach (var item in dirInfo.GetDirectories())
+            {
+                directories += item.FullName + "<br>";
+            }
+
             foreach (var item in dirInfo.GetFiles())
             {
                 files += item.Name + "<br>";
