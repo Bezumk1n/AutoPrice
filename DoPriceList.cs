@@ -141,53 +141,54 @@ namespace AutoPrice
             }
             //==================================================================================================
 
-            // Блок переноса данных из массива price в итоговый priceList
+            // В этом блоке проверяем количества по складам
+            for (int i = 1; i < rows; i++)
+            {
+                double warehouseQTY = double.Parse(price[i, 7], culture) + double.Parse(price[i, 11], culture);
+                double storeQTY     = double.Parse(price[i, 9], culture);
 
-            for (int i = 0; i < rows; i++)
+                if (warehouseQTY > 10)
+                {
+                    price[i, 7] = "Более 10 шт";
+                }
+                else if (warehouseQTY == 1)
+                {
+                    price[i, 7] = "Мало";
+                }
+                else
+                {
+                    price[i, 7] = warehouseQTY.ToString();
+                }
+
+                if (storeQTY > 10)
+                {
+                    price[i, 9] = "Более 10 шт";
+                }
+                else if (storeQTY == 1)
+                {
+                    price[i, 9] = "Мало";
+                }
+                else
+                {
+                    price[i, 9] = storeQTY.ToString();
+                }
+            }
+
+            // Переносим данные из массива в итоговый прайс
+            for (int i = 1; i < rows; i++)
             {
                 if (price[i, 0] != "0")
                 {
-                    string warehouse;
-                    string store;
-                    double warehouseQTY = double.Parse(price[i, 7], culture) + double.Parse(price[i, 11], culture);
-                    double storeQTY     = double.Parse(price[i, 9], culture);
-
-                    if (warehouseQTY > 10)
-                    {
-                        warehouse = "Более 10 шт";
-                    }
-                    else if (warehouseQTY == 1)
-                    {
-                        warehouse = "Мало";
-                    }
-                    else
-                    {
-                        warehouse = warehouseQTY.ToString();
-                    }
-
-                    if (storeQTY > 10)
-                    {
-                        store = "Более 10 шт";
-                    }
-                    else if (storeQTY == 1)
-                    {
-                        store = "Мало";
-                    }
-                    else
-                    {
-                        store = storeQTY.ToString();
-                    }
-
                     priceList.Add(new PriceModel
                     {
-                        ISBN            = price[i, 1],                                  // присваиваем ISBN
-                        Title           = price[i, 14],                                 // присваиваем Наименование
-                        Price           = double.Parse(price[i, 6], culture),           // присваиваем Цену
-                        VAT             = double.Parse(price[i, 4], culture),           // присваиваем НДС
-                        Group           = price[i, 3],                                  // присваиваем Группу
-                        QTYwarehouse    = warehouse,                                    // присваиваем Количество на складах (Северянин + Пушкарев)
-                        QTYstore        = store,                                        // присваиваем Количество в магазине
-                        ShortTitle      = price[i, 2]                                   // присваиваем Краткое наименование
+                        ISBN            = price[i, 1],                          // присваиваем ISBN
+                        Title           = price[i, 14],                         // присваиваем Наименование
+                        Price           = double.Parse(price[i, 6], culture),   // присваиваем Цену
+                        VAT             = double.Parse(price[i, 4], culture),   // присваиваем НДС
+                        Group           = price[i, 3],                          // присваиваем Группу
+                        QTYwarehouse    = price[i, 7],                          // присваиваем Количество на складах (Северянин + Пушкарев)
+                        QTYstore        = price[i, 9],                          // присваиваем Количество в магазине
+                        ShortTitle      = price[i, 2]                           // присваиваем Краткое наименование
                     });
                 }
             }
