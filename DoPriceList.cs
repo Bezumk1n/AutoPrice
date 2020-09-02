@@ -235,11 +235,12 @@ namespace AutoPrice
             }
             //==================================================================================================
 
+            int additionalInfoRows = additionalInfo.GetUpperBound(0);
             for (int i = 0; i < rows; i++)
             {
                 if (price[i, 0] != "0")
                 {
-                    for (int j = 0; j < additionalInfo.GetUpperBound(0); j++)
+                    for (int j = 0; j < additionalInfoRows; j++)
                     {
                         if (price[i, 1] == additionalInfo[j, 0])
                         {
@@ -255,10 +256,12 @@ namespace AutoPrice
                         }
                     }
                 }
+                Console.Clear();
                 Console.WriteLine($"Обработана {i + 1} позиция из {rows}");
             }
 
             // Переносим данные из массива в итоговый прайс
+            int count = 0;
             for (int i = 0; i < rows; i++)
             {
                 if (price[i, 0] != "0")
@@ -283,25 +286,30 @@ namespace AutoPrice
                         Catalog4        = price[i, 22],                         // присваиваем Категорию каталога 4
                         Catalog5        = price[i, 23]                          // присваиваем Категорию каталога 5
                     });
+                    count++;
+                    Console.Clear();
+                    Console.WriteLine($"В прайс добавлено {count} позиций");
                 }
-                Console.WriteLine($"В прайс добавлено {i+1} из {rows}");
+                
             }
 
             // Сортируем наш прайс по полю ShortTitle
             priceList = priceList.OrderBy(item => item.ShortTitle).ToList();
 
             // Добавляем нумерацию
-            int count = 1;
+            int number = 1;
             foreach (PriceModel item in priceList)
             {
-                item.Number = count;
-                count++;
+                item.Number = number;
+                number++;
             }
 
             // Сохранияем как в Excel файл
+            Console.WriteLine("Сохранияю файл в Excel");
             SaveAsExcel(priceList);
 
             // Добавляем в архив
+            Console.WriteLine("Добавляю в архив");
             WorkWithFile.AddPriceToZIP(destinationPath);
         }
         private void SaveAsExcel(List<PriceModel> priceList)

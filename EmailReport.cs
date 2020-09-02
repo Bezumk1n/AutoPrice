@@ -83,7 +83,7 @@ namespace AutoPrice
                 to                  = new MailAddress(toAdress[i]);
                 mail                = new MailMessage(from, to);
                 mail.Subject        = subject;
-                mail.Body           = message + files;
+                mail.Body           = message + directories +files;
                 mail.IsBodyHtml     = true;
                 smtp                = new SmtpClient("mail.relod.ru");
                 smtp.Credentials    = new NetworkCredential(login_pass[2], login_pass[3]);

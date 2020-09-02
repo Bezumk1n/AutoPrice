@@ -17,6 +17,7 @@ namespace AutoPrice
             try
             {
                 new DoPriceList(pricelistPath, exceptionPath, destinationPath, addInfoPath, fullPrice);
+                Console.WriteLine("Отправляю отчет по почте");
                 EmailReport.SendReport();
             }
             catch 

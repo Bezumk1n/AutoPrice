@@ -45,9 +45,11 @@ namespace AutoPrice
             Directory.Delete(startPath, true);
 
             // Удаляем старый прайс-лист
+            Console.WriteLine("Удаляю старый прайс");
             RemoveOldPrice(directory);
 
             // Загружаем архив на FTP
+            Console.WriteLine("Отправляю архив на FTP");
             UploadToFTP(zipPath, directory);
         }
         public static void UploadToFTP(string zipPath, string directory)
