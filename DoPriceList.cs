@@ -17,6 +17,7 @@ namespace AutoPrice
             string[] fileText           = WorkWithFile.OpenFile(pricelistPath);
             string[] exceptions         = WorkWithFile.OpenFile(exceptionPath);
             string[] addInfo            = WorkWithFile.OpenFile(addInfoPath);
+
             List <PriceModel> priceList = new List<PriceModel>();
             CultureInfo culture         = CultureInfo.CreateSpecificCulture("en-US");
 
@@ -235,6 +236,7 @@ namespace AutoPrice
             }
             //==================================================================================================
 
+            // Добавляем в массив price дополнительную информацию из additionalInfo
             int additionalInfoRows = additionalInfo.GetUpperBound(0);
             for (int i = 0; i < rows; i++)
             {
@@ -244,21 +246,22 @@ namespace AutoPrice
                     {
                         if (price[i, 1] == additionalInfo[j, 0])
                         {
-                            price[i, 15] = additionalInfo[j, 1];
-                            price[i, 16] = additionalInfo[j, 2];
-                            price[i, 17] = additionalInfo[j, 3];
-                            price[i, 18] = additionalInfo[j, 4];
-                            price[i, 19] = additionalInfo[j, 6];
-                            price[i, 20] = additionalInfo[j, 7];
-                            price[i, 21] = additionalInfo[j, 8];
-                            price[i, 22] = additionalInfo[j, 9];
-                            price[i, 23] = additionalInfo[j, 10];
+                            price[i, 15] = additionalInfo[j, 1]; // добавляем Язык
+                            price[i, 16] = additionalInfo[j, 2]; // добавляем Рекомендованный возраст
+                            price[i, 17] = additionalInfo[j, 3]; // добавляем Год
+                            price[i, 18] = additionalInfo[j, 4]; // добавляем Автора
+                            price[i, 19] = additionalInfo[j, 6]; // добавляем Категорию каталога 1
+                            price[i, 20] = additionalInfo[j, 7]; // добавляем Категорию каталога 2
+                            price[i, 21] = additionalInfo[j, 8]; // добавляем Категорию каталога 3
+                            price[i, 22] = additionalInfo[j, 9]; // добавляем Категорию каталога 4
+                            price[i, 23] = additionalInfo[j, 10];// добавляем Категорию каталога 5
                         }
                     }
                 }
                 Console.Clear();
                 Console.WriteLine($"Обработана {i + 1} позиция из {rows}");
             }
+            //==================================================================================================
 
             // Переносим данные из массива в итоговый прайс
             int count = 0;
