@@ -48,17 +48,43 @@ namespace AutoPrice
 
                 if (additionalInfo[i, 5].Contains(';'))
                 {
-                    additionalInfo[i, 5] = additionalInfo[i, 5].Replace(";Успей купить", "");
-                    additionalInfo[i, 5] = additionalInfo[i, 5].Replace(";SALE (Распродажа)", "");
-                    additionalInfo[i, 5] = additionalInfo[i, 5].Substring(additionalInfo[i, 5].LastIndexOf(";") + 1);
-                }
-                
-                // Так как у нас категория записана в 1 строчку, делим ее и добавляем в наши дополнительные столбцы (их может быть максимум 5)
-                string[] catalogGroups = additionalInfo[i, 5].Split('/');
+                    string[] tempAdditionalInfo = additionalInfo[i, 5].Split(';');
 
-                for (int k = 0; k < catalogGroups.Length; k++)
+                    for (int k = 0; k < tempAdditionalInfo.Length; k++)
+                    {
+                        if (tempAdditionalInfo[k].Contains("Успей купить") ||
+                            tempAdditionalInfo[k].Contains("Cпециальные ассортиментные предложения") ||
+                            tempAdditionalInfo[k].Contains("SALE (Распродажа)") ||
+                            tempAdditionalInfo[k].Contains("Готовимся к школе") ||
+                            tempAdditionalInfo[k].Contains("Книги с героями мультфильмов") ||
+                            tempAdditionalInfo[k].Contains("Книжные эпопеи детективного и фантастического жанров") ||
+                            tempAdditionalInfo[k].Contains("Новинки") ||
+                            tempAdditionalInfo[k].Contains("Рекомендуемые") ||
+                            tempAdditionalInfo[k].Contains("Хиты продаж") ||
+                            tempAdditionalInfo[k].Contains("Электронные продукты"))
+                        {
+                            tempAdditionalInfo[k] = "";
+                        }
+                        else
+                        {
+                            // Так как у нас категория записана в 1 строчку, делим ее и добавляем в наши дополнительные столбцы (их может быть максимум 5)
+                            string[] catalogGroups = tempAdditionalInfo[k].Split('/');
+
+                            for (int l = 0; l < catalogGroups.Length; l++)
+                            {
+                                additionalInfo[i, 6 + l] = catalogGroups[l];
+                            }
+                        }
+                    }
+                }
+                else
                 {
-                    additionalInfo[i, 6 + k] = catalogGroups[k];
+                    string[] catalogGroups = additionalInfo[i, 5].Split('/');
+
+                    for (int k = 0; k < catalogGroups.Length; k++)
+                    {
+                        additionalInfo[i, 6 + k] = catalogGroups[k];
+                    }
                 }
             }
             //==================================================================================================
