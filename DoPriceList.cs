@@ -30,11 +30,11 @@ namespace AutoPrice
             CultureInfo culture         = CultureInfo.CreateSpecificCulture("en-US");
 
             // Нужно подсчитать количество знаков табуляции. Так мы поймем сколько будет столбцов у будущих массивов "additionalInfo" и "price"
-            int rows = addInfo.GetUpperBound(0);
+            int rows    = addInfo.GetUpperBound(0);
             int columns = 1;
-            string str = addInfo[0];
-            string tab = "\t";
-            int index = 0;
+            string str  = addInfo[0];
+            string tab  = "\t";
+            int index   = 0;
 
             while ((index = str.IndexOf(tab, index)) != -1)
             {
@@ -96,10 +96,10 @@ namespace AutoPrice
             //==================================================================================================
 
             // Проделываем все тоже самое с массивом "price"
-            rows = fileText.GetUpperBound(0);
+            rows    = fileText.GetUpperBound(0);
             columns = 0;
-            str  = fileText[0];
-            tab  = "\t";
+            str     = fileText[0];
+            tab     = "\t";
             index   = 0;
 
             while ((index = str.IndexOf(tab, index)) != -1)
@@ -242,10 +242,12 @@ namespace AutoPrice
             //==================================================================================================
 
             // Добавляем в массив price дополнительную информацию из additionalInfo
-            // Дробим на 4 потока для ускорения
+            // Дробим на 4 потока для ускорения 
+            // (в массиве price более 130 тысяч строк, в массиве additionalInfo более 160 тысяч, 
+            // если делать в один поток то время заполнения ~11 минут, в четыре потока заполняется за ~3 минуты)
             Console.WriteLine("Запускаю потоки...");
 
-            // расчитываем стартовый индекс
+            // Пытаемся равномерно распределить количество позиций на 4 потока
             int startIndex = (int)Math.Round((double)(price.GetLength(0) / 4), 0);
 
             // нужно передать стартовый и конечный индексы
