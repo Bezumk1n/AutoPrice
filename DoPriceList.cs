@@ -243,12 +243,23 @@ namespace AutoPrice
 
             // Добавляем в массив price дополнительную информацию из additionalInfo
             // Дробим на 4 потока для ускорения
-            Console.WriteLine("Запускаю поток...");
+            Console.WriteLine("Запускаю потоки...");
 
-            FirstThreadAsync(0, 35000);
-            SecondThreadAsync(35000, 70000); // нужно передать стартовый и конечный индексы
-            ThirdThreadAsync(70000, 105000);
-            ForthThreadAsync(105000, price.GetLength(0));
+            // расчитываем стартовый индекс
+            int startIndex = (int)Math.Round((double)(price.GetLength(0) / 4), 0);
+
+            // нужно передать стартовый и конечный индексы
+            FirstThreadAsync(0, startIndex);
+            Console.WriteLine($"Запущен первый поток с индекса {0} по {startIndex}");
+
+            SecondThreadAsync(startIndex, startIndex*2);
+            Console.WriteLine($"Запущен второй поток с индекса {startIndex} по {startIndex*2}");
+
+            ThirdThreadAsync(startIndex*2, startIndex*3);
+            Console.WriteLine($"Запущен третий поток с индекса {startIndex*2} по {startIndex*3}");
+
+            ForthThreadAsync(startIndex*3, price.GetLength(0));
+            Console.WriteLine($"Запущен четвертый поток с индекса {startIndex*3} по {price.GetLength(0)}");
             //==================================================================================================
 
             // Ждем завершения всех потоков
@@ -307,7 +318,7 @@ namespace AutoPrice
             }
 
             // Сохранияем как в Excel файл
-            Console.WriteLine("Сохранияю файл в Excel");
+            Console.WriteLine("Сохраняю файл в Excel");
             SaveAsExcel(priceList);
 
             // Добавляем в архив
@@ -379,6 +390,7 @@ namespace AutoPrice
             FileInfo fi = new FileInfo(destinationPath);
             excelPackage.SaveAs(fi);
         }
+        
         private async void FirstThreadAsync(int startIndex, int endIndex)
         {
             await Task.Run(() => SecondThread(startIndex, endIndex));
@@ -403,6 +415,7 @@ namespace AutoPrice
             Console.WriteLine("Четвертый поток завершен");
             potok4 = true;
         }
+        
         private void SecondThread(int startIndex, int endIndex)
         {
             int additionalInfoRows = additionalInfo.GetLength(0);
@@ -427,8 +440,6 @@ namespace AutoPrice
                         }
                     }
                 }
-                //Console.Clear();
-                //Console.WriteLine($"(Второй поток) Обработана {i + 1} позиция из {rows}");
             }
         }
     }
