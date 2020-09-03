@@ -5,12 +5,20 @@ using System.Globalization;
 using System.IO;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace AutoPrice
 {
     public class DoPriceList
     {
         private string destinationPath;
+        string[,] price;
+        string[,] additionalInfo;
+        bool potok1 = false;
+        bool potok2 = false;
+        bool potok3 = false;
+        bool potok4 = false;
         public DoPriceList(string pricelistPath, string exceptionPath, string destinationPath, string addInfoPath, bool? fullPrice)
         {
             this.destinationPath        = destinationPath;
@@ -20,9 +28,6 @@ namespace AutoPrice
 
             List <PriceModel> priceList = new List<PriceModel>();
             CultureInfo culture         = CultureInfo.CreateSpecificCulture("en-US");
-
-            string[,] price;
-            string[,] additionalInfo;
 
             // Нужно подсчитать количество знаков табуляции. Так мы поймем сколько будет столбцов у будущих массивов "additionalInfo" и "price"
             int rows = addInfo.GetUpperBound(0);
@@ -237,29 +242,23 @@ namespace AutoPrice
             //==================================================================================================
 
             // Добавляем в массив price дополнительную информацию из additionalInfo
-            int additionalInfoRows = additionalInfo.GetUpperBound(0);
-            for (int i = 0; i < rows; i++)
+            // Дробим на 4 потока для ускорения
+            Console.WriteLine("Запускаю поток...");
+
+            FirstThreadAsync(0, 35000);
+            SecondThreadAsync(35000, 70000); // нужно передать стартовый и конечный индексы
+            ThirdThreadAsync(70000, 105000);
+            ForthThreadAsync(105000, price.GetLength(0));
+            //==================================================================================================
+
+            // Ждем завершения всех потоков
+            while (true)
             {
-                if (price[i, 0] != "0")
+                if (potok1 == true && potok2 == true && potok3 == true && potok4 == true)
                 {
-                    for (int j = 0; j < additionalInfoRows; j++)
-                    {
-                        if (price[i, 1] == additionalInfo[j, 0])
-                        {
-                            price[i, 15] = additionalInfo[j, 1]; // добавляем Язык
-                            price[i, 16] = additionalInfo[j, 2]; // добавляем Рекомендованный возраст
-                            price[i, 17] = additionalInfo[j, 3]; // добавляем Год
-                            price[i, 18] = additionalInfo[j, 4]; // добавляем Автора
-                            price[i, 19] = additionalInfo[j, 6]; // добавляем Категорию каталога 1
-                            price[i, 20] = additionalInfo[j, 7]; // добавляем Категорию каталога 2
-                            price[i, 21] = additionalInfo[j, 8]; // добавляем Категорию каталога 3
-                            price[i, 22] = additionalInfo[j, 9]; // добавляем Категорию каталога 4
-                            price[i, 23] = additionalInfo[j, 10];// добавляем Категорию каталога 5
-                        }
-                    }
+                    break;
                 }
-                Console.Clear();
-                Console.WriteLine($"Обработана {i + 1} позиция из {rows}");
+                Thread.Sleep(1000);
             }
             //==================================================================================================
 
@@ -379,6 +378,58 @@ namespace AutoPrice
             // Сохраняем файл в Excel
             FileInfo fi = new FileInfo(destinationPath);
             excelPackage.SaveAs(fi);
-        }  
+        }
+        private async void FirstThreadAsync(int startIndex, int endIndex)
+        {
+            await Task.Run(() => SecondThread(startIndex, endIndex));
+            Console.WriteLine("Первый поток завершен");
+            potok1 = true;
+        }
+        private async void SecondThreadAsync(int startIndex, int endIndex)
+        {
+            await Task.Run(() => SecondThread(startIndex, endIndex));
+            Console.WriteLine("Второй поток завершен");
+            potok2 = true;
+        }
+        private async void ThirdThreadAsync(int startIndex, int endIndex)
+        {
+            await Task.Run(() => SecondThread(startIndex, endIndex));
+            Console.WriteLine("Третий поток завершен");
+            potok3 = true;
+        }
+        private async void ForthThreadAsync(int startIndex, int endIndex)
+        {
+            await Task.Run(() => SecondThread(startIndex, endIndex));
+            Console.WriteLine("Четвертый поток завершен");
+            potok4 = true;
+        }
+        private void SecondThread(int startIndex, int endIndex)
+        {
+            int additionalInfoRows = additionalInfo.GetLength(0);
+            int rows = price.GetLength(0);
+            for (int i = startIndex; i < endIndex; i++)
+            {
+                if (price[i, 0] != "0")
+                {
+                    for (int j = 0; j < additionalInfoRows; j++)
+                    {
+                        if (price[i, 1] == additionalInfo[j, 0])
+                        {
+                            price[i, 15] = additionalInfo[j, 1]; // добавляем Язык
+                            price[i, 16] = additionalInfo[j, 2]; // добавляем Рекомендованный возраст
+                            price[i, 17] = additionalInfo[j, 3]; // добавляем Год
+                            price[i, 18] = additionalInfo[j, 4]; // добавляем Автора
+                            price[i, 19] = additionalInfo[j, 6]; // добавляем Категорию каталога 1
+                            price[i, 20] = additionalInfo[j, 7]; // добавляем Категорию каталога 2
+                            price[i, 21] = additionalInfo[j, 8]; // добавляем Категорию каталога 3
+                            price[i, 22] = additionalInfo[j, 9]; // добавляем Категорию каталога 4
+                            price[i, 23] = additionalInfo[j, 10];// добавляем Категорию каталога 5
+                        }
+                    }
+                }
+                //Console.Clear();
+                //Console.WriteLine($"(Второй поток) Обработана {i + 1} позиция из {rows}");
+            }
+        }
     }
 }
