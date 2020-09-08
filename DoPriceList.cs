@@ -97,7 +97,7 @@ namespace AutoPrice
 
             // Проделываем все тоже самое с массивом "price"
             rows    = fileText.GetUpperBound(0);
-            columns = 0;
+            columns = 1;
             str     = fileText[0];
             tab     = "\t";
             index   = 0;
@@ -123,7 +123,7 @@ namespace AutoPrice
             // Проверяем на нулевые цены ("0.00") и исключаем их, если таковые находятся
             for (int i = 0; i < rows; i++)
             {
-                if (price[i, 5] == "0.00")
+                if (price[i, 6] == ".000000000")
                 {
                     price[i, 0] = "0";
                 }
@@ -132,8 +132,7 @@ namespace AutoPrice
 
             // Блок проверки наименований на наличие. 
             // Наименования с нулевым количеством на складах (учитываются склад Северянин, Пушкарев и магазин) не будут попадать в прайс-лист
-            string zero = "0.00";
-            price[0, 0] = "0";
+            string zero = ".000000";
 
             if (fullPrice == false)
             {
@@ -208,7 +207,7 @@ namespace AutoPrice
             //==================================================================================================
 
             // В этом блоке проверяем количества по складам
-            for (int i = 1; i < rows; i++)
+            for (int i = 0; i < rows; i++)
             {
                 double warehouseQTY = double.Parse(price[i, 7], culture) + double.Parse(price[i, 11], culture);
                 double storeQTY     = double.Parse(price[i, 9], culture);
@@ -305,7 +304,6 @@ namespace AutoPrice
                     Console.Clear();
                     Console.WriteLine($"В прайс добавлено {count} позиций");
                 }
-                
             }
 
             // Сортируем наш прайс по полю ShortTitle
@@ -417,7 +415,6 @@ namespace AutoPrice
             Console.WriteLine("Четвертый поток завершен");
             potok4 = true;
         }
-        
         private void SecondThread(int startIndex, int endIndex)
         {
             int additionalInfoRows = additionalInfo.GetLength(0);

@@ -10,10 +10,12 @@ namespace AutoPrice
     {
         public static string[] OpenFile(string pricelistPath)
         {
-            string[] fileText   = null;
+            string[] fileText = null;
 
             if (File.Exists(pricelistPath))
             {
+                //System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+                //fileText = File.ReadAllLines(pricelistPath, Encoding.GetEncoding(866));
                 fileText = File.ReadAllLines(pricelistPath, Encoding.UTF8);
                 return fileText;
             }
@@ -57,7 +59,7 @@ namespace AutoPrice
             string[] login_pass = File.ReadAllLines(directory + @"\dailyUpload\log.txt", Encoding.UTF8);
 
             // Создаем объект FtpWebRequest - он указывает на файл, который будет создан
-            FtpWebRequest request   = (FtpWebRequest)WebRequest.Create("ftp://ftp.relod.nichost.ru/files/relod_price.zip");
+            FtpWebRequest request   = (FtpWebRequest)WebRequest.Create("ftp://31.177.95.151/files/relod_price.zip"); // "ftp://ftp.relod.nichost.ru/files/relod_price.zip"
             request.Credentials     = new NetworkCredential(login_pass[0], login_pass[1]);
 
             // Устанавливаем метод на загрузку файлов
