@@ -14,9 +14,9 @@ namespace AutoPrice
 
             if (File.Exists(pricelistPath))
             {
-                //System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
-                //fileText = File.ReadAllLines(pricelistPath, Encoding.GetEncoding(866));
-                fileText = File.ReadAllLines(pricelistPath, Encoding.UTF8);
+                System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+                fileText = File.ReadAllLines(pricelistPath, Encoding.GetEncoding(866));
+                //fileText = File.ReadAllLines(pricelistPath, Encoding.UTF8);
                 return fileText;
             }
 

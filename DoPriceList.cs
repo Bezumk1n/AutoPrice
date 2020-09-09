@@ -138,7 +138,7 @@ namespace AutoPrice
             {
                 for (int i = 0; i < rows; i++)
                 {
-                    if (price[i, 7] == zero && price[i, 9] == zero && price[i, 11] == zero && price[i, 3] != "OUP ELT OL")
+                    if (price[i, 7] == zero && price[i, 9] == zero && price[i, 11] == zero && price[i, 3] != "OUP ELT OL" && price[i, 3] != "OUP ELT")
                     {
                         price[i, 0] = "0";
                     }
