@@ -12,7 +12,7 @@ namespace AutoPrice
 {
     public class DoPriceList
     {
-        private string destinationPath;
+        string destinationPath;
         string[,] price;
         string[,] additionalInfo;
         bool potok1 = false;
@@ -216,10 +216,10 @@ namespace AutoPrice
                 {
                     price[i, 7] = "Более 10 шт";
                 }
-                else if (warehouseQTY == 1)
-                {
-                    price[i, 7] = "Мало";
-                }
+                //else if (warehouseQTY == 1)
+                //{
+                //    price[i, 7] = "Мало";
+                //}
                 else
                 {
                     price[i, 7] = warehouseQTY.ToString();
@@ -229,10 +229,10 @@ namespace AutoPrice
                 {
                     price[i, 9] = "Более 10 шт";
                 }
-                else if (storeQTY == 1)
-                {
-                    price[i, 9] = "Мало";
-                }
+                //else if (storeQTY == 1)
+                //{
+                //    price[i, 9] = "Мало";
+                //}
                 else
                 {
                     price[i, 9] = storeQTY.ToString();
