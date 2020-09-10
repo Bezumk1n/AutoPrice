@@ -418,7 +418,7 @@ namespace AutoPrice
         private void SecondThread(int startIndex, int endIndex)
         {
             int additionalInfoRows = additionalInfo.GetLength(0);
-            int rows = price.GetLength(0);
+
             for (int i = startIndex; i < endIndex; i++)
             {
                 if (price[i, 0] != "0")
