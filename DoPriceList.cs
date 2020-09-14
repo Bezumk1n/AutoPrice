@@ -15,16 +15,30 @@ namespace AutoPrice
         string destinationPath;
         string[,] price;
         string[,] additionalInfo;
+
         bool potok1 = false;
         bool potok2 = false;
         bool potok3 = false;
         bool potok4 = false;
+
+        string[] fileText;
+        string[] exceptions;
+        string[] addInfo;
+        
         public DoPriceList(string pricelistPath, string exceptionPath, string destinationPath, string addInfoPath, bool? fullPrice)
         {
-            this.destinationPath        = destinationPath;
-            string[] fileText           = WorkWithFile.OpenFile(pricelistPath);
-            string[] exceptions         = WorkWithFile.OpenFile(exceptionPath);
-            string[] addInfo            = WorkWithFile.OpenFile(addInfoPath);
+            this.destinationPath    = destinationPath;
+
+            fileText    = WorkWithFile.OpenFile(pricelistPath);
+            exceptions  = WorkWithFile.OpenFile(exceptionPath);
+            addInfo     = WorkWithFile.OpenFile(addInfoPath);
+
+            if (fileText == null)
+            {
+                string message = "При попытке сгенерировать прайс-лист произошла ошибка.";
+                EmailReport.SendReport(message);
+                return;
+            }
 
             List <PriceModel> priceList = new List<PriceModel>();
             CultureInfo culture         = CultureInfo.CreateSpecificCulture("en-US");

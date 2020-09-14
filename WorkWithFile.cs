@@ -3,6 +3,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Net;
 using System.Text;
+using System.Threading;
 
 namespace AutoPrice
 {
@@ -12,14 +13,21 @@ namespace AutoPrice
         {
             string[] fileText = null;
 
-            if (File.Exists(pricelistPath))
+            for (int i = 0; i < 10; i++)
             {
-                System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
-                fileText = File.ReadAllLines(pricelistPath, Encoding.GetEncoding(866));
-                //fileText = File.ReadAllLines(pricelistPath, Encoding.UTF8);
-                return fileText;
+                if (File.Exists(pricelistPath))
+                {
+                    System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+                    fileText = File.ReadAllLines(pricelistPath, Encoding.GetEncoding(866));
+                    //fileText = File.ReadAllLines(pricelistPath, Encoding.UTF8);
+                    return fileText;
+                }
+                else
+                {
+                    Console.WriteLine($"{i + 1} Попытка открыть исходный прайс-лист.");
+                    Thread.Sleep(1000);
+                }
             }
-
             return fileText;
         }
         public static void AddPriceToZIP(string destinationPath)
