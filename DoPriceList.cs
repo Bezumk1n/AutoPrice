@@ -132,13 +132,21 @@ namespace AutoPrice
 
             // Блок проверки наименований на наличие. 
             // Наименования с нулевым количеством на складах (учитываются склад Северянин, Пушкарев и магазин) не будут попадать в прайс-лист
+            // кроме перечисленных групп (остатки по ним должны игнорироваться)
             string zero = ".000000";
 
             if (fullPrice == false)
             {
                 for (int i = 0; i < rows; i++)
                 {
-                    if (price[i, 7] == zero && price[i, 9] == zero && price[i, 11] == zero && price[i, 3] != "OUP ELT OL" && price[i, 3] != "OUP ELT")
+                    if (price[i, 7] == zero && price[i, 9] == zero // && price[i, 11] == zero 
+                        && price[i, 3] != "OUP ELT OL" 
+                        && price[i, 3] != "OUP ELT"
+                        && price[i, 3] != "BLACK CAT"
+                        && price[i, 3] != "CIDEB"
+                        && price[i, 3] != "CLAVE-ELE"
+                        && price[i, 3] != "CLE"
+                        && price[i, 3] != "Express Publishing")
                     {
                         price[i, 0] = "0";
                     }
@@ -209,7 +217,7 @@ namespace AutoPrice
             // В этом блоке проверяем количества по складам
             for (int i = 0; i < rows; i++)
             {
-                double warehouseQTY = double.Parse(price[i, 7], culture) + double.Parse(price[i, 11], culture);
+                double warehouseQTY = double.Parse(price[i, 7], culture); // + double.Parse(price[i, 11], culture);
                 double storeQTY     = double.Parse(price[i, 9], culture);
 
                 if (warehouseQTY > 10)

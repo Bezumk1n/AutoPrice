@@ -8,7 +8,7 @@ namespace AutoPrice
     {
         static void Main(string[] args)
         {
-            string pricelistPath    = @"\\Srv2008\relodobmen\Прайс-листы\dailyUpload\prices.txt";
+            string pricelistPath    = @"\\Srv2008\relodobmen\Прайс-листы\dailyUpload\pric.txt";
             string exceptionPath    = @"\\Srv2008\relodobmen\Прайс-листы\dailyUpload\Exceptions.txt";
             string destinationPath  = @"\\Srv2008\relodobmen\Прайс-листы\" + "Price roznitca " + DateTime.Now.ToString("dd.MM.yyyy") + ".xlsx";
             string addInfoPath      = @"\\Srv2008\relodobmen\Прайс-листы\dailyUpload\additionalInfo.csv";
@@ -20,10 +20,10 @@ namespace AutoPrice
                 Console.WriteLine("Отправляю отчет по почте");
                 EmailReport.SendReport();
             }
-            catch 
+            catch (Exception ex)
             {
                 string message = "При попытке сгенерировать прайс-лист произошла ошибка.";
-                EmailReport.SendReport(message);
+                EmailReport.SendReport(message + "\n" + ex);
             }
         }
     }
