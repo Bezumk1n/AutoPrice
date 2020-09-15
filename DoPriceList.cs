@@ -35,7 +35,7 @@ namespace AutoPrice
 
             if (fileText == null)
             {
-                string message = "При попытке сгенерировать прайс-лист произошла ошибка.";
+                string message = "При попытке сгенерировать прайс-лист произошла ошибка (не удалось открыть исходный прайс).";
                 EmailReport.SendReport(message);
                 return;
             }
