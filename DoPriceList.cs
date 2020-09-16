@@ -148,32 +148,29 @@ namespace AutoPrice
             // Наименования с нулевым количеством на складах (учитываются склад Северянин, Пушкарев и магазин) не будут попадать в прайс-лист
             // кроме перечисленных групп (остатки по ним должны игнорироваться)
             string zero = ".000000";
+            string op = "OP!";
+            string na = "NA!";
 
-            if (fullPrice == false)
+            for (int i = 0; i < rows; i++)
             {
-                for (int i = 0; i < rows; i++)
+                if (price[i, 2].EndsWith(op) | price[i, 2].EndsWith(na) && price[i, 7] == zero && price[i, 9] == zero)
                 {
-                    if (price[i, 7] == zero && price[i, 9] == zero // && price[i, 11] == zero 
-                        && price[i, 3] != "OUP ELT OL" 
+                    price[i, 0] = "0";
+                }
+            }
+            
+            for (int i = 0; i < rows; i++)
+            {
+                if (price[i, 0] != "0")
+                {
+                    if (price[i, 7] == zero && price[i, 9] == zero
+                        && price[i, 3] != "OUP ELT OL"
                         && price[i, 3] != "OUP ELT"
                         && price[i, 3] != "BLACK CAT"
                         && price[i, 3] != "CIDEB"
                         && price[i, 3] != "CLAVE-ELE"
                         && price[i, 3] != "CLE"
                         && price[i, 3] != "Express Publishing")
-                    {
-                        price[i, 0] = "0";
-                    }
-                }
-            }
-            // Это условие срабатывает если fullPrice = true
-            else
-            {
-                string op = "OP!";
-                string na = "NA!";
-                for (int i = 0; i < rows; i++)
-                {
-                    if (price[i, 2].EndsWith(op) || price[i, 2].EndsWith(na) && price[i, 7] == zero && price[i, 9] == zero && price[i, 11] == zero)
                     {
                         price[i, 0] = "0";
                     }
