@@ -35,7 +35,7 @@ namespace AutoPrice
 
             foreach (var item in dirInfo.GetFiles())
             {
-                files += item.Name + "<br>";
+                files += item.Name + item.Length + "<br>";
             }
 
             from                = new MailAddress("stanislav.umnov@relod.ru", "RELOD Price Report");
@@ -49,7 +49,7 @@ namespace AutoPrice
 
                 if (toAdress[i] == "umnov.msk@gmail.com")
                 {
-                    mail.Body = message + directories +files;
+                    mail.Body = message + directories + files;
                 }
                 else 
                 {
@@ -72,7 +72,7 @@ namespace AutoPrice
 
             foreach (var item in dirInfo.GetFiles())
             {
-                files += item.Name + "<br>";
+                files += item.Name + item.Length + "<br>";
             }
 
             from                = new MailAddress("stanislav.umnov@relod.ru", "RELOD Price Report: ERROR");
