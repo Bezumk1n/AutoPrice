@@ -5,7 +5,6 @@ using System.Globalization;
 using System.IO;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace AutoPrice
@@ -15,11 +14,6 @@ namespace AutoPrice
         string destinationPath;
         string[,] price;
         string[,] additionalInfo;
-
-        bool potok1 = false;
-        bool potok2 = false;
-        bool potok3 = false;
-        bool potok4 = false;
 
         string[] fileText;
         string[] exceptions;
@@ -269,28 +263,21 @@ namespace AutoPrice
             int startIndex = (int)Math.Round((double)(price.GetLength(0) / 4), 0);
 
             // нужно передать стартовый и конечный индексы
-            FirstThreadAsync(0, startIndex);
-            Console.WriteLine($"Запущен первый поток с индекса {0} по {startIndex}");
 
-            SecondThreadAsync(startIndex, startIndex*2);
-            Console.WriteLine($"Запущен второй поток с индекса {startIndex} по {startIndex*2}");
-
-            ThirdThreadAsync(startIndex*2, startIndex*3);
-            Console.WriteLine($"Запущен третий поток с индекса {startIndex*2} по {startIndex*3}");
-
-            ForthThreadAsync(startIndex*3, price.GetLength(0));
-            Console.WriteLine($"Запущен четвертый поток с индекса {startIndex*3} по {price.GetLength(0)}");
-            //==================================================================================================
-
-            // Ждем завершения всех потоков
-            while (true)
-            {
-                if (potok1 == true && potok2 == true && potok3 == true && potok4 == true)
+            Task[] task = new Task[4]
                 {
-                    break;
-                }
-                Thread.Sleep(1000);
+                    new Task(() => SecondThread(0, startIndex)),
+                    new Task(() => SecondThread(startIndex, startIndex*2)),
+                    new Task(() => SecondThread(startIndex*2, startIndex*3)),
+                    new Task(() => SecondThread(startIndex*3, price.GetLength(0)))
+                };
+            foreach (Task t in task)
+            {
+                t.Start();
             }
+            Console.WriteLine("Ожидаю завершения всех задач.");
+            // Ждем завершения всех задач
+            Task.WaitAll(task);
             //==================================================================================================
 
             // Переносим данные из массива в итоговый прайс
@@ -409,31 +396,7 @@ namespace AutoPrice
             FileInfo fi = new FileInfo(destinationPath);
             excelPackage.SaveAs(fi);
         }
-        
-        private async void FirstThreadAsync(int startIndex, int endIndex)
-        {
-            await Task.Run(() => SecondThread(startIndex, endIndex));
-            Console.WriteLine("Первый поток завершен");
-            potok1 = true;
-        }
-        private async void SecondThreadAsync(int startIndex, int endIndex)
-        {
-            await Task.Run(() => SecondThread(startIndex, endIndex));
-            Console.WriteLine("Второй поток завершен");
-            potok2 = true;
-        }
-        private async void ThirdThreadAsync(int startIndex, int endIndex)
-        {
-            await Task.Run(() => SecondThread(startIndex, endIndex));
-            Console.WriteLine("Третий поток завершен");
-            potok3 = true;
-        }
-        private async void ForthThreadAsync(int startIndex, int endIndex)
-        {
-            await Task.Run(() => SecondThread(startIndex, endIndex));
-            Console.WriteLine("Четвертый поток завершен");
-            potok4 = true;
-        }
+ 
         private void SecondThread(int startIndex, int endIndex)
         {
             int additionalInfoRows = additionalInfo.GetLength(0);
