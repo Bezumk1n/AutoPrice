@@ -15,17 +15,17 @@ namespace AutoPrice
         string[,] price;
         string[,] additionalInfo;
 
-        string[] fileText;
-        string[] exceptions;
-        string[] addInfo;
+        //string[] fileText;
+        //string[] exceptions;
+        //string[] addInfo;
         
         public DoPriceList(string pricelistPath, string exceptionPath, string destinationPath, string addInfoPath, bool? fullPrice)
         {
             this.destinationPath    = destinationPath;
 
-            fileText    = WorkWithFile.OpenFile(pricelistPath);
-            exceptions  = WorkWithFile.OpenFile(exceptionPath);
-            addInfo     = WorkWithFile.OpenFile(addInfoPath);
+            string[] fileText       = WorkWithFile.OpenFile(pricelistPath);
+            string[] exceptions     = WorkWithFile.OpenFile(exceptionPath);
+            string[] addInfo        = WorkWithFile.OpenFile(addInfoPath);
 
             if (fileText == null)
             {
@@ -229,10 +229,6 @@ namespace AutoPrice
                 {
                     price[i, 7] = "Более 10 шт";
                 }
-                //else if (warehouseQTY == 1)
-                //{
-                //    price[i, 7] = "Мало";
-                //}
                 else
                 {
                     price[i, 7] = warehouseQTY.ToString();
@@ -242,10 +238,6 @@ namespace AutoPrice
                 {
                     price[i, 9] = "Более 10 шт";
                 }
-                //else if (storeQTY == 1)
-                //{
-                //    price[i, 9] = "Мало";
-                //}
                 else
                 {
                     price[i, 9] = storeQTY.ToString();
