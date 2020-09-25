@@ -15,10 +15,6 @@ namespace AutoPrice
         string[,] price;
         string[,] additionalInfo;
 
-        //string[] fileText;
-        //string[] exceptions;
-        //string[] addInfo;
-        
         public DoPriceList(string pricelistPath, string exceptionPath, string destinationPath, string addInfoPath, bool? fullPrice)
         {
             this.destinationPath    = destinationPath;
@@ -271,6 +267,8 @@ namespace AutoPrice
 
             // Ждем завершения всех задач
             Task.WaitAll(task);
+
+            additionalInfo = null;
             //==================================================================================================
 
             // Переносим данные из массива в итоговый прайс
@@ -304,6 +302,7 @@ namespace AutoPrice
                     Console.WriteLine($"В прайс добавлено {count} позиций");
                 }
             }
+            price = null;
 
             // Сортируем наш прайс по полю ShortTitle
             priceList = priceList.OrderBy(item => item.ShortTitle).ToList();
