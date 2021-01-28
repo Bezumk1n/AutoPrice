@@ -32,7 +32,8 @@ namespace AutoPrice.Model
         {
             try
             {
-                using (StreamReader sr = new StreamReader(@".\config\config.cfg"))
+                //Windows TaskManager почему-то не запускает программу если указан такой путь:  @".\config\config.cfg"
+                using (StreamReader sr = new StreamReader(@"C:\Users\MEsales4\Desktop\Projects\AutoPrice\bin\Release\netcoreapp3.1\config\config.cfg"))
                 {
                     var lines = sr.ReadToEnd().Split(Environment.NewLine);
 
@@ -103,16 +104,12 @@ namespace AutoPrice.Model
             }
             catch (FileNotFoundException)
             {
-                _error.ErrorMessage = $"{DateTime.Now} : Не найден файл конфигурации config.cfg в папке {Environment.CurrentDirectory}\\config";
-                //return false;
+                _error.ErrorMessage = $"{DateTime.Now} : Не найден файл конфигурации config.cfg в папке";// {Environment.CurrentDirectory}\\config";
             }
             catch (Exception)
             {
                 _error.ErrorMessage = $"{DateTime.Now} : При поптыке обработать файл конфигурации config.cfg в папке {Environment.CurrentDirectory}\\config произошла непредвиденная ошибка";
-                //return false;
             }
-
-            //return true;
         }
     }
 }
