@@ -27,7 +27,6 @@ namespace AutoPrice
             var ignorableGroups = _config.IgnorableGroups;
             var exceptionGroups = _config.ExceptionGroups;
 
-            var excludeList = new List<PriceModel>();
             var additionalInfo = new List<AdditionalInfo>();
             var priceList = new List<PriceModel>();
 

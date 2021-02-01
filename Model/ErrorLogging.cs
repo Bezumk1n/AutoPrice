@@ -5,12 +5,14 @@ namespace AutoPrice.Model
 {
     public class ErrorLogging
     {
+        public bool isErrorOccured;
         public string ErrorMessage
         {
             get { return null; }
             set
             {
-                using (StreamWriter sw = new StreamWriter(@".\errorLog.log", true))
+                isErrorOccured = true;
+                using (StreamWriter sw = new StreamWriter(@".\errorLog.txt", true))
                 {
                     sw.Write(value + Environment.NewLine);
                     sw.Close();

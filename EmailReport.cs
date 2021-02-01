@@ -1,94 +1,71 @@
-﻿using System;
-using System.IO;
+﻿using AutoPrice.Model;
+using System;
 using System.Net;
 using System.Net.Mail;
-using System.Text;
 
 namespace AutoPrice
 {
     public class EmailReport
     {
-        private string[] login_pass = File.ReadAllLines(@"\\Srv2008\relodobmen\Прайс-листы\dailyUpload\log.txt", Encoding.UTF8);
-        private DirectoryInfo dirInfo = new DirectoryInfo(@"\\Srv2008\relodobmen\Прайс-листы\");
+        private readonly Config _config;
+        private readonly ErrorLogging _error;
 
-        private MailAddress from;
-        private MailAddress to;
-        private MailMessage mail;
-        
-        private SmtpClient smtp;
+        public EmailReport() { }
+        public EmailReport(Config config, ErrorLogging error)
+        {
+            _config = config;
+            _error = error;
+        }
 
-        private string subject = "Price Report";
-        private string message =
+        public void SendReport()
+        {
+            var smtp = new SmtpClient("mail.relod.ru");
+            smtp.Credentials = new NetworkCredential(_config.MailLogin, _config.MailPass);
+            var from = new MailAddress("stanislav.umnov@relod.ru", "RELOD Price Report");
+
+            var subject = "Price Report";
+            var message =
                 "<h4>Прайс-лист был сгенерирован и размещен в архиве на сайте <a href=\"http://www.relod.ru/company/publishers\">www.relod.ru/company/publishers</a></h4>" +
                 "Прямая ссылка для скачивания прайса: <a href =\"http://www.relod.ru/files/relod_price.zip\">www.relod.ru/files/relod_price.zip</a><br>" +
                 "<p>ЗАО РЕЛОД<br>" +
                 DateTime.Now.ToString();
+            var errorMessage = "При подготовке прайс-листа произошла ошибка.";
 
-        private string directories = "<p>Список директорий для контроля:<br>";
-        private string files = "<p>Список файлов в директории для контроля:<br>";
-        public void SendReport()
-        {
-            foreach (var item in dirInfo.GetDirectories())
+            try
             {
-                directories += item.FullName + "<br>";
-            }
-
-            foreach (var item in dirInfo.GetFiles())
-            {
-                files += item.Name + item.Length + "<br>";
-            }
-
-            from                = new MailAddress("stanislav.umnov@relod.ru", "RELOD Price Report");
-            string[] toAdress   = new string[] { "umnov.msk@gmail.com" };
-
-            for (int i = 0; i < toAdress.Length; i++)
-            {
-                to                  = new MailAddress(toAdress[i]);
-                mail                = new MailMessage(from, to);
-                mail.Subject        = subject;
-
-                if (toAdress[i] == "umnov.msk@gmail.com")
+                if (_error.isErrorOccured)
                 {
-                    mail.Body = message + directories + files;
+                    foreach (var adress in _config.ErrorReportMailRecipients)
+                    {
+                        SendErrorReport(smtp, from, adress, subject, errorMessage);
+                    }
                 }
-                else 
+                else
                 {
-                    mail.Body = message;
+                    foreach (var adress in _config.ReportMailRecipients)
+                    {
+                        SendErrorReport(smtp, from, adress, subject, message);
+                    }
                 }
-
-                mail.IsBodyHtml     = true;
-                smtp                = new SmtpClient("mail.relod.ru");
-                smtp.Credentials    = new NetworkCredential(login_pass[2], login_pass[3]);
-                smtp.Send(mail);
-                Console.WriteLine($"Отправлено {i + 1} писем из {toAdress.Length}");
+            }
+            catch (Exception ex)
+            {
+                _error.ErrorMessage = $"{DateTime.Now} : При поптыке отправить письма произошла непредвиденная ошибка \n{ex}";
             }
         }
-        public void SendReport(string message)
+
+        private void SendErrorReport(SmtpClient smtp, MailAddress from, string adress, string subject, string message)
         {
-            foreach (var item in dirInfo.GetDirectories())
+            var to = new MailAddress(adress);
+            var mail = new MailMessage(from, to);
+            mail.Subject = subject;
+            mail.Body = message;
+            mail.IsBodyHtml = true;
+            if (_error.isErrorOccured)
             {
-                directories += item.FullName + "<br>";
+                mail.Attachments.Add(new Attachment(@".\errorLog.txt"));
             }
-
-            foreach (var item in dirInfo.GetFiles())
-            {
-                files += item.Name + item.Length + "<br>";
-            }
-
-            from                = new MailAddress("stanislav.umnov@relod.ru", "RELOD Price Report: ERROR");
-            string[] toAdress   = new string[] { "umnov.msk@gmail.com" };
-
-            for (int i = 0; i < toAdress.Length; i++)
-            {
-                to                  = new MailAddress(toAdress[i]);
-                mail                = new MailMessage(from, to);
-                mail.Subject        = subject;
-                mail.Body           = message + directories +files;
-                mail.IsBodyHtml     = true;
-                smtp                = new SmtpClient("mail.relod.ru");
-                smtp.Credentials    = new NetworkCredential(login_pass[2], login_pass[3]);
-                smtp.Send(mail);
-            }
+            smtp.Send(mail);
         }
     }
 }

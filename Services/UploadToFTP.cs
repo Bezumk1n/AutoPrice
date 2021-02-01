@@ -15,7 +15,7 @@ namespace AutoPrice.Services
             _config = config;
             _error = error;
         }
-        public bool UploadPrice()
+        public void UploadPrice()
         {
             try
             {
@@ -41,9 +41,7 @@ namespace AutoPrice.Services
             catch (Exception ex)
             {
                 _error.ErrorMessage = $"{DateTime.Now} : При поптыке отправить архив на FTP произошла непредвиденная ошибка \n{ex}";
-                return false;
             }
-            return true;
         }
     }
 }

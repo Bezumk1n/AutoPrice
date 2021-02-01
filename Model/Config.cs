@@ -22,6 +22,11 @@ namespace AutoPrice.Model
         public string TempPath { get; private set; }
         public int HourToStart { get; private set; }
         public int MinuteToStart { get; private set; }
+        public string[] ErrorReportMailRecipients { get; private set; }
+        public string[] ReportMailRecipients { get; private set; }
+        public string MailLogin { get; private set; }
+        public string MailPass { get; private set; }
+
         private ErrorLogging _error;
 
         public Config(ErrorLogging error)
@@ -113,12 +118,28 @@ namespace AutoPrice.Model
                         {
                             MinuteToStart = Convert.ToInt32(lines[i].Substring(lines[i].IndexOf("=") + 1).Trim());
                         }
+                        else if (lines[i].ToLower().StartsWith("maillogin"))
+                        {
+                            MailLogin = lines[i].Substring(lines[i].IndexOf("=") + 1).Trim();
+                        }
+                        else if (lines[i].ToLower().StartsWith("mailpass"))
+                        {
+                            MailPass = lines[i].Substring(lines[i].IndexOf("=") + 1).Trim();
+                        }
+                        else if (lines[i].ToLower().StartsWith("errorreportmailrecipients"))
+                        {
+                            ErrorReportMailRecipients = lines[i].Substring(lines[i].IndexOf("=") + 1).Trim().Split(';');
+                        }
+                        else if (lines[i].ToLower().StartsWith("reportmailrecipients"))
+                        {
+                            ReportMailRecipients = lines[i].Substring(lines[i].IndexOf("=") + 1).Trim().Split(';');
+                        }
                     }
                 }
             }
             catch (FileNotFoundException)
             {
-                _error.ErrorMessage = $"{DateTime.Now} : Не найден файл конфигурации config.cfg в папке";// {Environment.CurrentDirectory}\\config";
+                _error.ErrorMessage = $"{DateTime.Now} : Не найден файл конфигурации config.cfg в папке {Environment.CurrentDirectory}\\config";
             }
             catch (Exception)
             {

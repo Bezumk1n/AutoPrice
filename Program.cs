@@ -1,7 +1,6 @@
 ﻿using AutoPrice.Model;
 using AutoPrice.Services;
 using System;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace AutoPrice
@@ -16,6 +15,7 @@ namespace AutoPrice
                 var config = new Config(errorLog);
                 new AdditionalInfo(config);
                 new PriceModel(config);
+                var report = new EmailReport(config, errorLog);
 
                 var timeNow = DateTime.Now;
                 var timeToRun = new DateTime(timeNow.Year, timeNow.Month, timeNow.Day + 1, config.HourToStart, config.MinuteToStart, 0);
@@ -34,6 +34,8 @@ namespace AutoPrice
                 {
                     errorLog.ErrorMessage = $"{DateTime.Now} : При поптыке сформировать прайс-лист произошла ошибка \n{ex}";
                 };
+
+                report.SendReport();
             }
         }
     }
