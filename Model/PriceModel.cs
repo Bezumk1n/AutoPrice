@@ -27,7 +27,6 @@ namespace AutoPrice
         private static Config _config;
 
         public PriceModel() { }
-
         public PriceModel(Config config) => _config = config;
 
         public static PriceModel GetPriceList(string row)

@@ -13,13 +13,15 @@ namespace AutoPrice.Model
         public string[] ExceptionCategories { get; private set; }
         public string SpeceficCulture { get; private set; }
         public string DestinationPath { get; private set; }
-        public string ExcelFileName { get; set; }
+        public string ExcelFileName { get; private set; }
         public string ArchiveFileName { get; private set; }
         public string AbbreviationsPath { get; private set; }
         public string FtpAdress { get; private set; }
         public string Login { get; private set; }
         public string Pass { get; private set; }
         public string TempPath { get; private set; }
+        public int HourToStart { get; private set; }
+        public int MinuteToStart { get; private set; }
         private ErrorLogging _error;
 
         public Config(ErrorLogging error)
@@ -32,8 +34,7 @@ namespace AutoPrice.Model
         {
             try
             {
-                //Windows TaskManager почему-то не запускает программу если указан такой путь:  @".\config\config.cfg"
-                using (StreamReader sr = new StreamReader(@"C:\Users\MEsales4\Desktop\Projects\AutoPrice\bin\Release\netcoreapp3.1\config\config.cfg"))
+                using (StreamReader sr = new StreamReader(@".\config\config.cfg"))
                 {
                     var lines = sr.ReadToEnd().Split(Environment.NewLine);
 
@@ -74,6 +75,11 @@ namespace AutoPrice.Model
                         else if (lines[i].ToLower().StartsWith("excelfilename"))
                         {
                             ExcelFileName = lines[i].Substring(lines[i].IndexOf("=") + 1).Trim();
+
+                            if (ExcelFileName == "default")
+                            { 
+                                ExcelFileName = $"Price roznitca {DateTime.Now.ToString("dd.MM.yyyy")}.xlsx";
+                            }
                         }
                         else if (lines[i].ToLower().StartsWith("archivefilename"))
                         {
@@ -98,6 +104,14 @@ namespace AutoPrice.Model
                         else if (lines[i].ToLower().StartsWith("temp"))
                         {
                             TempPath = lines[i].Substring(lines[i].IndexOf("=") + 1).Trim();
+                        }
+                        else if (lines[i].ToLower().StartsWith("hourtostart"))
+                        {
+                            HourToStart = Convert.ToInt32(lines[i].Substring(lines[i].IndexOf("=") + 1).Trim());
+                        }
+                        else if (lines[i].ToLower().StartsWith("minutetostart"))
+                        {
+                            MinuteToStart = Convert.ToInt32(lines[i].Substring(lines[i].IndexOf("=") + 1).Trim());
                         }
                     }
                 }

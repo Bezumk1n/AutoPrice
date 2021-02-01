@@ -82,17 +82,7 @@ namespace AutoPrice.Services
             worksheet.Cells["A1:R" + cellsCount].Style.Border.Left.Style = ExcelBorderStyle.Thin;
 
             // Сохраняем файл в Excel
-            string path;
-            if (_config.ExcelFileName == "default")
-            {
-                string fileName = $"Price roznitca {DateTime.Now.ToString("dd.MM.yyyy")}.xlsx";
-                _config.ExcelFileName = fileName;
-                path = $"{_config.DestinationPath}\\{fileName}";
-            }
-            else
-            { 
-                path = $"{_config.DestinationPath}\\{_config.ExcelFileName}.xlsx";
-            }
+            var path = $"{_config.DestinationPath}\\{_config.ExcelFileName}";
 
             try
             {

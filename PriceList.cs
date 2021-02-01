@@ -19,7 +19,7 @@ namespace AutoPrice
             this._error = error;
         }
  
-        public List<PriceModel> DoPriceList()
+        public List<PriceModel> MakePriceList()
         {
             var priceListPath = _config.PriceListFilePath;
             var additionalListPath = _config.AdditionalInfoFilePath;
