@@ -48,7 +48,7 @@ namespace AutoPrice
                         Console.WriteLine("Sent");
                     }
                 }
-                send.Wait();
+                send?.Wait();
             }
             catch (Exception ex)
             {
