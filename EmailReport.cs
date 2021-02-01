@@ -2,6 +2,7 @@
 using System;
 using System.Net;
 using System.Net.Mail;
+using System.Threading.Tasks;
 
 namespace AutoPrice
 {
@@ -19,8 +20,6 @@ namespace AutoPrice
 
         public void SendReport()
         {
-            var smtp = new SmtpClient("mail.relod.ru");
-            smtp.Credentials = new NetworkCredential(_config.MailLogin, _config.MailPass);
             var from = new MailAddress("stanislav.umnov@relod.ru", "RELOD Price Report");
 
             var subject = "Price Report";
@@ -31,22 +30,25 @@ namespace AutoPrice
                 DateTime.Now.ToString();
             var errorMessage = "При подготовке прайс-листа произошла ошибка.";
 
+            Task send = null;
             try
             {
                 if (_error.isErrorOccured)
                 {
                     foreach (var adress in _config.ErrorReportMailRecipients)
                     {
-                        SendErrorReport(smtp, from, adress, subject, errorMessage);
+                        send = Task.Run(() => SendErrorReport(from, adress, subject, errorMessage));
                     }
                 }
                 else
                 {
                     foreach (var adress in _config.ReportMailRecipients)
                     {
-                        SendErrorReport(smtp, from, adress, subject, message);
+                        send = Task.Run(() => SendErrorReport(from, adress, subject, message));
+                        Console.WriteLine("Sent");
                     }
                 }
+                send.Wait();
             }
             catch (Exception ex)
             {
@@ -54,8 +56,10 @@ namespace AutoPrice
             }
         }
 
-        private void SendErrorReport(SmtpClient smtp, MailAddress from, string adress, string subject, string message)
+        private void SendErrorReport(MailAddress from, string adress, string subject, string message)
         {
+            var smtp = new SmtpClient("mail.relod.ru");
+            smtp.Credentials = new NetworkCredential(_config.MailLogin, _config.MailPass);
             var to = new MailAddress(adress);
             var mail = new MailMessage(from, to);
             mail.Subject = subject;
