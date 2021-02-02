@@ -22,6 +22,11 @@ namespace AutoPrice
                 var remove      = new RemoveOldPrice(config, errorLog);
                 var report      = new EmailReport(config, errorLog);
 
+                if (!config.GetConfig())
+                {
+                    return;
+                }
+
                 var timeNow = DateTime.Now;
                 var timeToRun = new DateTime(timeNow.Year, timeNow.Month, timeNow.Day + 1, config.HourToStart, config.MinuteToStart, 0);
                 TimeSpan delayTime = timeToRun - timeNow;

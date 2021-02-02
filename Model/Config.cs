@@ -29,13 +29,9 @@ namespace AutoPrice.Model
 
         private ErrorLogging _error;
 
-        public Config(ErrorLogging error)
-        {
-            _error = error;
-            GetConfig();
-        }
+        public Config(ErrorLogging error) => _error = error;
 
-        public void GetConfig()
+        public bool GetConfig()
         {
             try
             {
@@ -82,7 +78,7 @@ namespace AutoPrice.Model
                             ExcelFileName = lines[i].Substring(lines[i].IndexOf("=") + 1).Trim();
 
                             if (ExcelFileName == "default")
-                            { 
+                            {
                                 ExcelFileName = $"Price roznitca {DateTime.Now.ToString("dd.MM.yyyy")}.xlsx";
                             }
                         }
@@ -136,15 +132,22 @@ namespace AutoPrice.Model
                         }
                     }
                 }
+
+                return true;
             }
             catch (FileNotFoundException)
             {
                 _error.ErrorMessage = $"{DateTime.Now} : Не найден файл конфигурации config.cfg в папке {Environment.CurrentDirectory}\\config";
             }
+            catch (DirectoryNotFoundException)
+            {
+                _error.ErrorMessage = $"{DateTime.Now} : В папке {Environment.CurrentDirectory} не найдена папка config";
+            }
             catch (Exception)
             {
                 _error.ErrorMessage = $"{DateTime.Now} : При поптыке обработать файл конфигурации config.cfg в папке {Environment.CurrentDirectory}\\config произошла непредвиденная ошибка";
             }
+            return false;
         }
     }
 }
