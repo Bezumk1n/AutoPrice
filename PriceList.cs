@@ -110,9 +110,11 @@ namespace AutoPrice
                         Catalog2 = t_addinfo?.Catalog2 ?? string.Empty,
                         Catalog3 = t_addinfo?.Catalog3 ?? string.Empty,
                         Catalog4 = t_addinfo?.Catalog4 ?? string.Empty,
-                        Catalog5 = t_addinfo?.Catalog5 ?? string.Empty,
+                        Catalog5 = t_addinfo?.Catalog5 ?? string.Empty
                     })
                 .ToList();
+
+                return priceList;
             }
             catch (ArgumentNullException)
             {
@@ -124,8 +126,6 @@ namespace AutoPrice
                 _error.ErrorMessage = $"{DateTime.Now} : При попытке объединить основной прайс-лист со списком дополнительной информации произошла непредвиденная ошибка";
                 return null;
             }
-
-            return priceList;
         }
         private List<PriceModel> GetDataFromPriceFile(string path, int encoding)
         {
