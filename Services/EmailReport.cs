@@ -45,7 +45,6 @@ namespace AutoPrice
                     foreach (var adress in _config.ReportMailRecipients)
                     {
                         send = Task.Run(() => SendErrorReport(from, adress, subject, message));
-                        Console.WriteLine("Sent");
                     }
                 }
                 send?.Wait();
@@ -65,10 +64,16 @@ namespace AutoPrice
             mail.Subject = subject;
             mail.Body = message;
             mail.IsBodyHtml = true;
+
             if (_error.isErrorOccured)
             {
                 mail.Attachments.Add(new Attachment(@".\errorLog.txt"));
             }
+            // Рассылка прайс-листа пока не нужна, но в будущем понадобится
+            //else
+            //{
+            //    mail.Attachments.Add(new Attachment(_config.DestinationPath + _config.ArchiveFileName));
+            //}
             smtp.Send(mail);
         }
     }

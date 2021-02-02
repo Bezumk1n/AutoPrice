@@ -23,15 +23,15 @@ namespace AutoPrice.Services
             {
                 var tempPath = Directory.CreateDirectory(_config.TempPath);
                 tempPath.Attributes = FileAttributes.Hidden;
-                var archPath = Directory.CreateDirectory(tempPath + "\\archTemp");
+                var archPath = Directory.CreateDirectory(tempPath + "\\archTemp\\");
 
                 // Копируем файл прайс-листа
-                File.Copy($"{_config.DestinationPath}\\{_config.ExcelFileName}", $"{archPath.FullName}\\{_config.ExcelFileName}", true);
+                File.Copy(_config.DestinationPath + _config.ExcelFileName, archPath.FullName + _config.ExcelFileName, true);
                 // Копируем файл со списком сокращений
-                File.Copy($"{_config.AbbreviationsPath}", $"{archPath.FullName}\\{_config.AbbreviationsPath.Substring(_config.AbbreviationsPath.LastIndexOf("\\"))}", true);
+                File.Copy(_config.AbbreviationsPath, archPath.FullName + _config.AbbreviationsPath.Substring(_config.AbbreviationsPath.LastIndexOf("\\")), true);
 
                 // Создаем архив в папке archTemp
-                ZipFile.CreateFromDirectory(archPath.FullName, $"{tempPath}\\{_config.ArchiveFileName}");
+                ZipFile.CreateFromDirectory(archPath.FullName, tempPath + _config.ArchiveFileName);
             }
             catch (Exception ex)
             {

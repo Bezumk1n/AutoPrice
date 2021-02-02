@@ -21,7 +21,7 @@ namespace AutoPrice.Services
             try
             {
                 // Создаем объект FtpWebRequest - он указывает на файл, который будет создан
-                var connectionPath = $"{_config.FtpAdress}{_config.ArchiveFileName}";
+                var connectionPath = _config.FtpAdress + _config.ArchiveFileName;
                 var request = (FtpWebRequest)WebRequest.Create(connectionPath);
                 request.Credentials = new NetworkCredential(_config.Login, _config.Pass);
 
@@ -29,7 +29,7 @@ namespace AutoPrice.Services
                 request.Method = WebRequestMethods.Ftp.UploadFile;
 
                 // Создаем поток для загрузки файла
-                var fs = new FileStream($"{_config.TempPath}\\{_config.ArchiveFileName}", FileMode.Open);
+                var fs = new FileStream(_config.TempPath + _config.ArchiveFileName, FileMode.Open);
                 var fileContents = new byte[fs.Length];
                 fs.Read(fileContents, 0, fileContents.Length);
                 fs.Close();

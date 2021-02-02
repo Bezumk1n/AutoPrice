@@ -81,7 +81,7 @@ namespace AutoPrice.Services
             worksheet.Cells["A1:R" + cellsCount].Style.Border.Left.Style = ExcelBorderStyle.Thin;
 
             // Сохраняем файл в Excel
-            var path = $"{_config.DestinationPath}\\{_config.ExcelFileName}";
+            var path = _config.DestinationPath + _config.ExcelFileName;
 
             try
             {

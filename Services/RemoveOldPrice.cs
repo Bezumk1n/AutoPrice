@@ -35,13 +35,12 @@ namespace AutoPrice.Services
                 }
             }
 
-            // Удаляем старый архив и копируем новый
-            if (File.Exists($"{_config.DestinationPath}\\{_config.ArchiveFileName}"))
+            // Удаляем старый архив
+            if (File.Exists(_config.DestinationPath + _config.ArchiveFileName))
             {
                 try
                 {
-                    File.Delete($"{_config.DestinationPath}\\{_config.ArchiveFileName}");
-                    File.Copy($"{_config.TempPath}\\{_config.ArchiveFileName}", $"{_config.DestinationPath}\\{_config.ArchiveFileName}");
+                    File.Delete(_config.DestinationPath + _config.ArchiveFileName);
                 }
                 catch (UnauthorizedAccessException)
                 {
@@ -52,6 +51,17 @@ namespace AutoPrice.Services
                     _error.ErrorMessage = $"{DateTime.Now} : При поптыке удалить старый архив произошла непредвиденная ошибка \n{ex}";
                 }
             }
+            
+            // Копируем новый архив из временной папки
+            try
+            {
+                File.Copy(_config.TempPath + _config.ArchiveFileName, _config.DestinationPath + _config.ArchiveFileName);
+            }
+            catch (Exception ex)
+            {
+                _error.ErrorMessage = $"{DateTime.Now} : При поптыке скопировать новый архив произошла непредвиденная ошибка \n{ex}";
+            }
+
 
             // Удаляем временную директорию
             if (Directory.Exists(_config.TempPath))
