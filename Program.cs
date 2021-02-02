@@ -13,14 +13,14 @@ namespace AutoPrice
             {
                 var errorLog    = new ErrorLogging();
                 var config      = new Config(errorLog);
-                var addInfo = new AdditionalInfo(config);
-                var priceModel = new PriceModel(config);
-                var priceList = new PriceList(config, errorLog);
-                var makeExcel = new MakeExcelFile(config, errorLog);
+                var addInfo     = new AdditionalInfo(config);
+                var priceModel  = new PriceModel(config);
+                var priceList   = new PriceList(config, errorLog);
+                var makeExcel   = new MakeExcelFile(config, errorLog);
                 var makeArchive = new MakeArchiveFile(config, errorLog);
-                var upload = new UploadToFTP(config, errorLog);
-                var remove = new RemoveOldPrice(config, errorLog);
-                var report = new EmailReport(config, errorLog);
+                var upload      = new UploadToFTP(config, errorLog);
+                var remove      = new RemoveOldPrice(config, errorLog);
+                var report      = new EmailReport(config, errorLog);
 
                 var timeNow = DateTime.Now;
                 var timeToRun = new DateTime(timeNow.Year, timeNow.Month, timeNow.Day + 1, config.HourToStart, config.MinuteToStart, 0);
