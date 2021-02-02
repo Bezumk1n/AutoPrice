@@ -30,24 +30,24 @@ namespace AutoPrice
                 DateTime.Now.ToString();
             var errorMessage = "При подготовке прайс-листа произошла ошибка.";
 
-            Task send = null;
+            Task sendMail = null;
             try
             {
                 if (_error.isErrorOccured)
                 {
                     foreach (var adress in _config.ErrorReportMailRecipients)
                     {
-                        send = Task.Run(() => SendErrorReport(from, adress, subject, errorMessage));
+                        sendMail = Task.Run(() => SendMail(from, adress, subject, errorMessage));
                     }
                 }
                 else
                 {
                     foreach (var adress in _config.ReportMailRecipients)
                     {
-                        send = Task.Run(() => SendErrorReport(from, adress, subject, message));
+                        sendMail = Task.Run(() => SendMail(from, adress, subject, message));
                     }
                 }
-                send?.Wait();
+                sendMail?.Wait();
             }
             catch (Exception ex)
             {
@@ -55,7 +55,7 @@ namespace AutoPrice
             }
         }
 
-        private void SendErrorReport(MailAddress from, string adress, string subject, string message)
+        private void SendMail(MailAddress from, string adress, string subject, string message)
         {
             var smtp = new SmtpClient("mail.relod.ru");
             smtp.Credentials = new NetworkCredential(_config.MailLogin, _config.MailPass);
