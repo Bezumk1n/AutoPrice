@@ -15,6 +15,7 @@ namespace AutoPrice.Services
             _config = config;
             _error = error;
         }
+
         public void UploadPrice()
         {
             try

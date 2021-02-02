@@ -11,10 +11,15 @@ namespace AutoPrice
         {
             while (true)
             {
-                var errorLog = new ErrorLogging();
-                var config = new Config(errorLog);
-                new AdditionalInfo(config);
-                new PriceModel(config);
+                var errorLog    = new ErrorLogging();
+                var config      = new Config(errorLog);
+                var addInfo = new AdditionalInfo(config);
+                var priceModel = new PriceModel(config);
+                var priceList = new PriceList(config, errorLog);
+                var makeExcel = new MakeExcelFile(config, errorLog);
+                var makeArchive = new MakeArchiveFile(config, errorLog);
+                var upload = new UploadToFTP(config, errorLog);
+                var remove = new RemoveOldPrice(config, errorLog);
                 var report = new EmailReport(config, errorLog);
 
                 var timeNow = DateTime.Now;
@@ -24,11 +29,11 @@ namespace AutoPrice
 
                 try
                 {
-                    var priceList = new PriceList(config, errorLog).MakePriceList();
-                    new MakeExcelFile(priceList, config, errorLog).SavePriceAsExcel();
-                    new MakeArchiveFile(config, errorLog).CreateArchiveFile();
-                    new UploadToFTP(config, errorLog).UploadPrice();
-                    new RemoveOldPrice(config, errorLog).Remove();
+                    var price = priceList.MakePriceList();
+                    makeExcel.SavePriceAsExcel(price);
+                    makeArchive.CreateArchiveFile();
+                    upload.UploadPrice();
+                    remove.Remove();
                 }
                 catch (Exception ex)
                 {

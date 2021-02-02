@@ -9,17 +9,16 @@ namespace AutoPrice.Services
 {
     class MakeExcelFile
     {
-        private readonly List<PriceModel> _priceList;
         private readonly Config _config;
         private readonly ErrorLogging _error;
 
-        public MakeExcelFile(List<PriceModel> priceList, Config config, ErrorLogging error)
+        public MakeExcelFile(Config config, ErrorLogging error)
         {
-            _priceList = priceList;
             _config = config;
             _error = error;
         }
-        public bool SavePriceAsExcel()
+
+        public void SavePriceAsExcel(List<PriceModel> priceList)
         {
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
@@ -47,7 +46,7 @@ namespace AutoPrice.Services
             worksheet.Cells["R1"].Value = "Категория каталога 5";
 
             // Добавляем данные из priceList начиная со второй строки
-            worksheet.Cells["A2"].LoadFromCollection(_priceList);
+            worksheet.Cells["A2"].LoadFromCollection(priceList);
 
             // Устанавливаем ширину столбцов, кроме последнего ("Краткое наименование")
             worksheet.Column(1).AutoFit();      // #
@@ -71,7 +70,7 @@ namespace AutoPrice.Services
 
             // Устанавливаем границы, автофильтр, жирный шрифт для шапки, закрепляем первую строку, 
             // а также меняем цифровой формат для столбца с ценами
-            int cellsCount = _priceList.Count + 1;
+            int cellsCount = priceList.Count + 1;
             worksheet.Column(4).Style.Numberformat.Format = "0.00";
             worksheet.View.FreezePanes(2, 1);
             worksheet.Cells["A1:R1"].Style.Font.Bold = true;
@@ -92,9 +91,7 @@ namespace AutoPrice.Services
             catch (Exception ex)
             {
                 _error.ErrorMessage = $"{DateTime.Now} : При поптыке сохранить прайс-лист в Excel файл в папке {path} произошла непредвиденная ошибка \n{ex}";
-                return false;
             }
-            return true;
         }
     }
 }
