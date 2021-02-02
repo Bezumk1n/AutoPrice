@@ -9,7 +9,7 @@ namespace AutoPrice
     {
         static void Main(string[] args)
         {
-            //while (true)
+            while (true)
             {
                 var errorLog    = new ErrorLogging();
                 var config      = new Config(errorLog);
@@ -25,7 +25,7 @@ namespace AutoPrice
                 var timeNow = DateTime.Now;
                 var timeToRun = new DateTime(timeNow.Year, timeNow.Month, timeNow.Day + 1, config.HourToStart, config.MinuteToStart, 0);
                 TimeSpan delayTime = timeToRun - timeNow;
-                //Task.Delay(delayTime).Wait();
+                Task.Delay(delayTime).Wait();
 
                 try
                 {
