@@ -86,16 +86,16 @@ namespace AutoPrice.Model
 
             return new AdditionalInfo()
             {
-                ISBN = currentRow[0],
-                Language = currentRow[1],
-                Age = currentRow[2],
-                Year = currentRow[3],
-                Author = currentRow[4],
-                Catalog1 = catalogs[0],
-                Catalog2 = catalogs[1],
-                Catalog3 = catalogs[2],
-                Catalog4 = catalogs[3],
-                Catalog5 = catalogs[4]
+                ISBN        = currentRow[0],
+                Language    = currentRow[1],
+                Age         = currentRow[2],
+                Year        = currentRow[3],
+                Author      = currentRow[4],
+                Catalog1    = catalogs[0],
+                Catalog2    = catalogs[1],
+                Catalog3    = catalogs[2],
+                Catalog4    = catalogs[3],
+                Catalog5    = catalogs[4]
             };
         }
     }

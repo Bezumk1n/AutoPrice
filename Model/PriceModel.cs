@@ -39,7 +39,7 @@ namespace AutoPrice
             double.TryParse(temp[4], NumberStyles.Any, culture, out double vat);
             double.TryParse(temp[7], NumberStyles.Any, culture, out double QTYwarehouse);
             double.TryParse(temp[9], NumberStyles.Any, culture, out double QTYstore);
-
+            
             return new PriceModel()
             {
                 ISBN            = temp[1],
