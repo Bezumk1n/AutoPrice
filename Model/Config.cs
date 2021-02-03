@@ -20,8 +20,6 @@ namespace AutoPrice.Model
         public string Login { get; private set; }
         public string Pass { get; private set; }
         public string TempPath { get; private set; }
-        public int HourToStart { get; private set; }
-        public int MinuteToStart { get; private set; }
         public string[] ErrorReportMailRecipients { get; private set; }
         public string[] ReportMailRecipients { get; private set; }
         public string MailLogin { get; private set; }
@@ -105,14 +103,6 @@ namespace AutoPrice.Model
                         else if (lines[i].ToLower().StartsWith("temp"))
                         {
                             TempPath = lines[i].Substring(lines[i].IndexOf("=") + 1).Trim();
-                        }
-                        else if (lines[i].ToLower().StartsWith("hourtostart"))
-                        {
-                            HourToStart = Convert.ToInt32(lines[i].Substring(lines[i].IndexOf("=") + 1).Trim());
-                        }
-                        else if (lines[i].ToLower().StartsWith("minutetostart"))
-                        {
-                            MinuteToStart = Convert.ToInt32(lines[i].Substring(lines[i].IndexOf("=") + 1).Trim());
                         }
                         else if (lines[i].ToLower().StartsWith("maillogin"))
                         {

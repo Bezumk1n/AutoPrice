@@ -11,6 +11,11 @@ namespace AutoPrice
         {
             while (true)
             {
+                var timeNow = DateTime.Now;
+                var timeToRun = new DateTime(timeNow.Year, timeNow.Month, timeNow.Day + 1, 6, 30, 0);
+                TimeSpan delayTime = timeToRun - timeNow;
+                Task.Delay(delayTime).Wait();
+
                 var errorLog    = new ErrorLogging();
                 var config      = new Config(errorLog);
                 var addInfo     = new AdditionalInfo(config);
@@ -26,11 +31,6 @@ namespace AutoPrice
                 {
                     return;
                 }
-
-                var timeNow = DateTime.Now;
-                var timeToRun = new DateTime(timeNow.Year, timeNow.Month, timeNow.Day + 1, config.HourToStart, config.MinuteToStart, 0);
-                TimeSpan delayTime = timeToRun - timeNow;
-                Task.Delay(delayTime).Wait();
 
                 try
                 {
