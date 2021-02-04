@@ -35,7 +35,7 @@ namespace AutoPrice.Model
             // Мы знаем, что в итоге может быть выделено максимум пять категорий, поэтому сразу создаем под них массив нужного размера
             string[] catalogs = new string[5];
 
-            // Проходим циклом массиву с категориями, чтобы выделить строки с категориями отвечающие требованиеям
+            // Проходим циклом по массиву с категориями, чтобы выделить строки с категориями отвечающие требованиям
             for (int i = 0; i < temp.Length; i++)
             {
                 // Проверяем, содержит ли текущая строка в массиве категорию из стоп-листа
@@ -69,9 +69,9 @@ namespace AutoPrice.Model
                         {
                             checkSumm = count;
                             string[] catalogGroups = tempCatalogs[i].Split('/');
-                            for (int l = 0; l < catalogGroups.Length; l++)
+                            for (int j = 0; j < catalogGroups.Length; j++)
                             {
-                                catalogs[l] = catalogGroups[l].Trim();
+                                catalogs[j] = catalogGroups[j].Trim();
                             }
                         }
                     }
