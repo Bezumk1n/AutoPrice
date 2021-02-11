@@ -11,10 +11,12 @@ namespace AutoPrice
         {
             while (true)
             {
+                // Настраиваем таймер запуска
                 var timeNow = DateTime.Now;
                 var timeToRun = new DateTime(timeNow.Year, timeNow.Month, timeNow.Day + 1, 6, 30, 0);
                 var delayTime = timeToRun - timeNow;
                 Task.Delay(delayTime).Wait();
+                // ==========================
 
                 var errorLog    = new ErrorLogging();
                 var config      = new Config(errorLog);
