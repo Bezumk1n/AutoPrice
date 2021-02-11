@@ -45,9 +45,16 @@ namespace AutoPrice
                 catch (Exception ex)
                 {
                     errorLog.ErrorMessage = $"{DateTime.Now} : При поптыке сформировать прайс-лист произошла ошибка \n{ex}";
-                };
+                }
 
-                report.SendReport();
+                try
+                {
+                    report.SendReport();
+                }
+                catch (Exception ex)
+                {
+                    errorLog.ErrorMessage = $"{DateTime.Now} : При поптыке отправить письма произошла ошибка \n{ex}";
+                }
             }
         }
     }
