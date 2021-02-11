@@ -19,7 +19,7 @@ namespace AutoPrice
             this._error = error;
         }
  
-        public List<PriceModel> MakePriceList()
+        public List<ClientPriceModel> MakePriceList()
         {
             var priceListPath = _config.PriceListFilePath;
             var additionalListPath = _config.AdditionalInfoFilePath;
@@ -29,6 +29,7 @@ namespace AutoPrice
 
             var additionalInfo = new List<AdditionalInfo>();
             var priceList = new List<PriceModel>();
+            var clientPriceList = new List<ClientPriceModel>();
 
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
@@ -85,13 +86,13 @@ namespace AutoPrice
             int row = 1;
             try
             {
-                priceList = priceList
+                clientPriceList = priceList
                 .GroupJoin(additionalInfo,
                     p => p.ISBN,
                     a => a.ISBN,
                     (price, addInfo) => new { price, addInfo })
                 .SelectMany(temp => temp.addInfo.DefaultIfEmpty(),
-                    (t_price, t_addinfo) => new PriceModel
+                    (t_price, t_addinfo) => new ClientPriceModel
                     {
                         Number = row++,
                         ISBN = t_price.price.ISBN,
@@ -99,8 +100,8 @@ namespace AutoPrice
                         Price = t_price.price.Price,
                         VAT = t_price.price.VAT,
                         Group = t_price.price.Group,
-                        QTYwarehouse = t_price.price.QTYwarehouse,
-                        QTYstore = t_price.price.QTYstore,
+                        QTYwarehouse = t_price.price.QTYwarehouse > 10 ? "Более 10 шт" : t_price.price.QTYwarehouse.ToString(),
+                        QTYstore = t_price.price.QTYstore > 10 ? "Более 10 шт" : t_price.price.QTYstore.ToString(),
                         ShortTitle = t_price.price.ShortTitle,
                         Language = t_addinfo?.Language ?? string.Empty,
                         Age = t_addinfo?.Age ?? string.Empty,
@@ -114,7 +115,7 @@ namespace AutoPrice
                     })
                 .ToList();
 
-                return priceList;
+                return clientPriceList;
             }
             catch (ArgumentNullException)
             {

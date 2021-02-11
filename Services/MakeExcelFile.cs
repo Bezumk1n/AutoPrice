@@ -18,7 +18,7 @@ namespace AutoPrice.Services
             _error = error;
         }
 
-        public void SavePriceAsExcel(List<PriceModel> priceList)
+        public void SavePriceAsExcel(List<ClientPriceModel> priceList)
         {
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
