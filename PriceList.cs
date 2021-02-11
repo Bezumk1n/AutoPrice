@@ -94,24 +94,24 @@ namespace AutoPrice
                 .SelectMany(temp => temp.addInfo.DefaultIfEmpty(),
                     (t_price, t_addinfo) => new ClientPriceModel
                     {
-                        Number = row++,
-                        ISBN = t_price.price.ISBN,
-                        Title = t_price.price.Title,
-                        Price = t_price.price.Price,
-                        VAT = t_price.price.VAT,
-                        Group = t_price.price.Group,
-                        QTYwarehouse = t_price.price.QTYwarehouse > 10 ? "Более 10 шт" : t_price.price.QTYwarehouse.ToString(),
-                        QTYstore = t_price.price.QTYstore > 10 ? "Более 10 шт" : t_price.price.QTYstore.ToString(),
-                        ShortTitle = t_price.price.ShortTitle,
-                        Language = t_addinfo?.Language ?? string.Empty,
-                        Age = t_addinfo?.Age ?? string.Empty,
-                        Year = t_addinfo?.Year ?? string.Empty,
-                        Author = t_addinfo?.Author ?? string.Empty,
-                        Catalog1 = t_addinfo?.Catalog1 ?? string.Empty,
-                        Catalog2 = t_addinfo?.Catalog2 ?? string.Empty,
-                        Catalog3 = t_addinfo?.Catalog3 ?? string.Empty,
-                        Catalog4 = t_addinfo?.Catalog4 ?? string.Empty,
-                        Catalog5 = t_addinfo?.Catalog5 ?? string.Empty
+                        Number          = row++,
+                        ISBN            = t_price.price.ISBN,
+                        Title           = t_price.price.Title,
+                        Price           = t_price.price.Price,
+                        VAT             = t_price.price.VAT,
+                        Group           = t_price.price.Group,
+                        QTYwarehouse    = t_price.price.QTYwarehouse > 10 ? "Более 10 шт" : t_price.price.QTYwarehouse.ToString(),
+                        QTYstore        = t_price.price.QTYstore > 10 ? "Более 10 шт" : t_price.price.QTYstore.ToString(),
+                        ShortTitle      = t_price.price.ShortTitle,
+                        Language        = t_addinfo?.Language ?? string.Empty,
+                        Age             = t_addinfo?.Age ?? string.Empty,
+                        Year            = t_addinfo?.Year ?? string.Empty,
+                        Author          = t_addinfo?.Author ?? string.Empty,
+                        Catalog1        = t_addinfo?.Catalog1 ?? string.Empty,
+                        Catalog2        = t_addinfo?.Catalog2 ?? string.Empty,
+                        Catalog3        = t_addinfo?.Catalog3 ?? string.Empty,
+                        Catalog4        = t_addinfo?.Catalog4 ?? string.Empty,
+                        Catalog5        = t_addinfo?.Catalog5 ?? string.Empty
                     })
                 .ToList();
 
