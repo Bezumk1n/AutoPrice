@@ -15,8 +15,8 @@ namespace AutoPrice
 
         public PriceList(Config config, ErrorLogging error)
         {
-            this._config = config;
-            this._error = error;
+            _config = config;
+            _error = error;
         }
  
         public List<ClientPriceModel> MakePriceList()
@@ -53,7 +53,7 @@ namespace AutoPrice
             {
                 priceList = priceList
                 .Except(priceList.Where(
-                    item => exceptionGroups.Contains(item.Group)))
+                    item => exceptionGroups.Contains(item.Group))) //или exceptionGroups.Any(x => item.Group.Contains(x))))
                 .Except(priceList.Where(
                     item => item?.Price == 0))
                 .Except(priceList.Where(
@@ -104,9 +104,9 @@ namespace AutoPrice
                         QTYwarehouse    = t_price.price.QTYwarehouse > 10 ? "Более 10 шт" : t_price.price.QTYwarehouse.ToString(),
                         QTYstore        = t_price.price.QTYstore > 10 ? "Более 10 шт" : t_price.price.QTYstore.ToString(),
                         // Возможно понадобится выборочное указание количества если группа равна группе из эксклюзивного списка
-                        //QTYwarehouse    = exclusiveGroups.Any(x => x.Contains(t_price.price.Group)) && t_price.price.QTYwarehouse < 20 ? "Менее 20 шт" :
+                        //QTYwarehouse    = exclusiveGroups.Contains(t_price.price.Group) && t_price.price.QTYwarehouse < 20 ? "Менее 20 шт" :
                         //                    t_price.price.QTYwarehouse > 10 ? "Более 10 шт" : t_price.price.QTYwarehouse.ToString(),
-                        //QTYstore        = exclusiveGroups.Any(x => x.Contains(t_price.price.Group)) && t_price.price.QTYstore < 20 ? "Менее 20 шт" :
+                        //QTYstore        = exclusiveGroups.Contains(t_price.price.Group)) && t_price.price.QTYstore < 20 ? "Менее 20 шт" :
                         //                    t_price.price.QTYstore > 10 ? "Более 10 шт" : t_price.price.QTYstore.ToString(),
                         ShortTitle      = t_price.price.ShortTitle,
                         Language        = t_addinfo?.Language ?? string.Empty,
