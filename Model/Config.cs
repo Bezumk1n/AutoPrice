@@ -8,6 +8,7 @@ namespace AutoPrice.Model
         public string PriceListFilePath { get; private set; }
         public int Encoding { get; private set; }
         public string AdditionalInfoFilePath { get; private set; }
+        public string[] ExclusiveGroups { get; private set; }
         public string[] IgnorableGroups { get; private set; }
         public string[] ExceptionGroups { get; private set; }
         public string[] ExceptionCategories { get; private set; }
@@ -54,6 +55,10 @@ namespace AutoPrice.Model
                         else if (lines[i].ToLower().StartsWith("speceficculture"))
                         {
                             SpeceficCulture = lines[i].Substring(lines[i].IndexOf("=") + 1).Trim();
+                        }
+                        else if (lines[i].ToLower().StartsWith("exclusivegroups"))
+                        {
+                            ExclusiveGroups = lines[i].Substring(lines[i].IndexOf("=") + 1).Trim().Split(';');
                         }
                         else if (lines[i].ToLower().StartsWith("ignorablegroups"))
                         {

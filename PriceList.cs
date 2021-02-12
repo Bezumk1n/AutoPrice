@@ -26,6 +26,7 @@ namespace AutoPrice
             var encoding = _config.Encoding;
             var ignorableGroups = _config.IgnorableGroups;
             var exceptionGroups = _config.ExceptionGroups;
+            var exclusiveGroups = _config.ExclusiveGroups;
 
             var additionalInfo = new List<AdditionalInfo>();
             var priceList = new List<PriceModel>();
@@ -102,6 +103,11 @@ namespace AutoPrice
                         Group           = t_price.price.Group,
                         QTYwarehouse    = t_price.price.QTYwarehouse > 10 ? "Более 10 шт" : t_price.price.QTYwarehouse.ToString(),
                         QTYstore        = t_price.price.QTYstore > 10 ? "Более 10 шт" : t_price.price.QTYstore.ToString(),
+                        // Возможно понадобится выборочное указание количества если группа равна группе из эксклюзивного списка
+                        //QTYwarehouse    = exclusiveGroups.Any(x => x.Contains(t_price.price.Group)) && t_price.price.QTYwarehouse < 20 ? "Менее 20 шт" :
+                        //                    t_price.price.QTYwarehouse > 10 ? "Более 10 шт" : t_price.price.QTYwarehouse.ToString(),
+                        //QTYstore        = exclusiveGroups.Any(x => x.Contains(t_price.price.Group)) && t_price.price.QTYstore < 20 ? "Менее 20 шт" :
+                        //                    t_price.price.QTYstore > 10 ? "Более 10 шт" : t_price.price.QTYstore.ToString(),
                         ShortTitle      = t_price.price.ShortTitle,
                         Language        = t_addinfo?.Language ?? string.Empty,
                         Age             = t_addinfo?.Age ?? string.Empty,
