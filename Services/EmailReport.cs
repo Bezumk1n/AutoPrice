@@ -28,7 +28,7 @@ namespace AutoPrice
                 "Прямая ссылка для скачивания прайса: <a href =\"http://www.relod.ru/files/relod_price.zip\">www.relod.ru/files/relod_price.zip</a><br>" +
                 "<p>ЗАО РЕЛОД<br>" +
                 DateTime.Now.ToString();
-            var errorMessage = "При подготовке прайс-листа произошла ошибка.";
+            var errorMessage = "При подготовке прайс-листа произошла ошибка. Проверьте файл errorLog.txt";
 
             Task sendMail = null;
             try
